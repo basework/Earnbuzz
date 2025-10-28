@@ -8,6 +8,7 @@ import { Logo } from "@/components/logo"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Alert, AlertDescription } from "@/components/ui/alert"
+import { supabase } from "@/lib/supabase/client"
 
 export default function LoginPage() {
   const router = useRouter()
@@ -37,37 +38,48 @@ export default function LoginPage() {
     window.open(whatsappUrl, "_blank")
   }
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
     setError("")
 
-    const registeredUsers = localStorage.getItem("tivexx-registered-users")
-    const users = registeredUsers ? JSON.parse(registeredUsers) : []
+    try {
+      // Use Supabase Auth for login
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      })
 
-    const user = users.find((u: any) => u.email === email && u.password === password)
+      if (error) {
+        setError("Invalid email or password")
+        setLoading(false)
+        return
+      }
 
-    if (user) {
+      // Login successful - get user data from your public.users table
+      const { data: userData } = await supabase
+        .from("users")
+        .select("name, email, referral_code")
+        .eq("id", data.user.id)
+        .single()
+
+      // Save to localStorage for app compatibility
       localStorage.setItem(
         "tivexx-user",
         JSON.stringify({
-          name: user.name,
-          email: user.email,
+          name: userData?.name || "User",
+          email: data.user.email,
           balance: 5000,
           weeklyRewards: 5000,
           hasMomoNumber: false,
         }),
       )
 
-      setTimeout(() => {
-        setLoading(false)
-        router.push("/dashboard")
-      }, 1000)
-    } else {
-      setTimeout(() => {
-        setLoading(false)
-        setError("Invalid email or password. Please try again.")
-      }, 1000)
+      router.push("/dashboard")
+    } catch (err) {
+      setError("Login failed")
+    } finally {
+      setLoading(false)
     }
   }
 
