@@ -56,6 +56,7 @@ export async function POST(request: NextRequest) {
         id: userId,
         name,
         email,
+        password: password, // ← PASSWORD ADDED HERE
         referral_code: newReferralCode,
         referred_by: referrerId,
       })
