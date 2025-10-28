@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
     if (referralCode) {
       const { data } = await supabase
         .from("users")
-        .select("id")
+        .select("id, referral_count, referral_balance")
         .eq("referral_code", referralCode)
         .maybeSingle()
       if (data) referrerId = data.id
@@ -56,9 +56,11 @@ export async function POST(request: NextRequest) {
         id: userId,
         name,
         email,
-        password: password, // ← PASSWORD ADDED HERE
+        password: password,
         referral_code: newReferralCode,
         referred_by: referrerId,
+        referral_count: 0, // Initialize count
+        referral_balance: 0, // Initialize balance
       })
       .select("id, name, email, referral_code")
       .single()
@@ -67,13 +69,31 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: insertError.message }, { status: 500 })
     }
 
-    // 5. Record referral
+    // 5. Record referral and update referrer's count/balance
     if (referrerId) {
+      // Insert referral record
       await supabase.from("referrals").insert({
         referrer_id: referrerId,
         referred_id: userId,
-        amount: 500,
+        amount: 10000, // 10,000 naira referral bonus
       })
+
+      // Update referrer's count and balance
+      const { data: referrer } = await supabase
+        .from("users")
+        .select("referral_count, referral_balance")
+        .eq("id", referrerId)
+        .single()
+
+      if (referrer) {
+        await supabase
+          .from("users")
+          .update({
+            referral_count: (referrer.referral_count || 0) + 1,
+            referral_balance: (referrer.referral_balance || 0) + 10000 // 10,000 naira
+          })
+          .eq("id", referrerId)
+      }
     }
 
     return NextResponse.json({ success: true, user: newUser })
