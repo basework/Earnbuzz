@@ -7,8 +7,8 @@ export async function GET(request: NextRequest, { params }: { params: { userId: 
     const supabase = await createClient()
 
     const { data: user, error } = await supabase
-      .from("profiles")
-      .select("id, name, email, referral_code, referral_count, referral_balance")
+      .from("users") // ← CHANGED FROM "profiles" TO "users"
+      .select("id, name, email, referral_code, password, referred_by, created_at")
       .eq("id", userId)
       .single()
 
