@@ -80,8 +80,8 @@ export default function ReferPage() {
   }
 
   const referralLink = userData?.referral_code
-  ? `https://tivexxx9ja.netlify.app/register?ref=${userData.referral_code}`
-  : "https://tivexxx9ja.netlify.app/register";
+  ? `https://tivexxxx9ja.vercel.app/register?ref=${userData.referral_code}`
+  : "https://tivexxxx9ja.vercel.app/register";
 
   // Get random message
   const getRandomMessage = () => {
