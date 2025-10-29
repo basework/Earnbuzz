@@ -142,58 +142,61 @@ export default function DashboardPage() {
     return () => clearInterval(timer)
   }, [isCounting])
 
-  const handleClaim = () => {
-    if (pauseEndTime && pauseEndTime > Date.now()) {
-      setShowPauseDialog(true)
-      return
-    }
-
-    if (canClaim) {
-      const newClaimCount = claimCount + 1
-      const newBalance = balance + 1000
-
-      setBalance(newBalance)
-      setClaimCount(newClaimCount)
-      localStorage.setItem("tivexx-claim-count", newClaimCount.toString())
-
-      setShowClaimSuccess(true)
-      setTimeout(() => setShowClaimSuccess(false), 3000)
-
-      if (newClaimCount >= 50) {
-        const fiveHoursLater = Date.now() + 5 * 60 * 60 * 1000
-        setPauseEndTime(fiveHoursLater)
-        localStorage.setItem("tivexx-pause-end-time", fiveHoursLater.toString())
-        setCanClaim(false)
-      } else {
-        setCanClaim(false)
-        setTimeRemaining(60)
-        setIsCounting(true)
-
-        localStorage.setItem("tivexx-timer", "60")
-        localStorage.setItem("tivexx-timer-timestamp", Date.now().toString())
-      }
-
-      if (newClaimCount === 50) {
-        setTimeout(() => setShowReminderDialog(true), 1000)
-      }
-
-      if (userData) {
-        const updatedUser = { ...userData, balance: newBalance }
-        localStorage.setItem("tivexx-user", JSON.stringify(updatedUser))
-        setUserData(updatedUser)
-      }
-
-      const transactions = JSON.parse(localStorage.getItem("tivexx-transactions") || "[]")
-      transactions.unshift({
-        id: Date.now(),
-        type: "credit",
-        description: "Daily Claim Reward",
-        amount: 1000,
-        date: new Date().toISOString(),
-      })
-      localStorage.setItem("tivexx-transactions", JSON.stringify(transactions))
-    }
+const handleClaim = () => {
+  if (pauseEndTime && pauseEndTime > Date.now()) {
+    setShowPauseDialog(true)
+    return
   }
+
+  if (canClaim) {
+    const newClaimCount = claimCount + 1
+    const newBalance = balance + 1000
+
+    // Update state
+    setBalance(newBalance)
+    setClaimCount(newClaimCount)
+    
+    // Save to localStorage
+    localStorage.setItem("tivexx-claim-count", newClaimCount.toString())
+    
+    // CRITICAL FIX: Update user data in localStorage
+    if (userData) {
+      const updatedUser = { ...userData, balance: newBalance }
+      localStorage.setItem("tivexx-user", JSON.stringify(updatedUser))
+      setUserData(updatedUser)
+    }
+
+    setShowClaimSuccess(true)
+    setTimeout(() => setShowClaimSuccess(false), 3000)
+
+    if (newClaimCount >= 50) {
+      const fiveHoursLater = Date.now() + 5 * 60 * 60 * 1000
+      setPauseEndTime(fiveHoursLater)
+      localStorage.setItem("tivexx-pause-end-time", fiveHoursLater.toString())
+      setCanClaim(false)
+    } else {
+      setCanClaim(false)
+      setTimeRemaining(60)
+      setIsCounting(true)
+      localStorage.setItem("tivexx-timer", "60")
+      localStorage.setItem("tivexx-timer-timestamp", Date.now().toString())
+    }
+
+    if (newClaimCount === 50) {
+      setTimeout(() => setShowReminderDialog(true), 1000)
+    }
+
+    const transactions = JSON.parse(localStorage.getItem("tivexx-transactions") || "[]")
+    transactions.unshift({
+      id: Date.now(),
+      type: "credit",
+      description: "Daily Claim Reward",
+      amount: 1000,
+      date: new Date().toISOString(),
+    })
+    localStorage.setItem("tivexx-transactions", JSON.stringify(transactions))
+  }
+}
 
   const formatCurrency = (amount: number) => {
     if (!showBalance) return "••••••••"
