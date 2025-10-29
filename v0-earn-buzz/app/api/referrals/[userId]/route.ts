@@ -6,12 +6,12 @@ export async function GET(request: NextRequest, { params }: { params: { userId: 
     const { userId } = params
     const supabase = await createClient()
 
-    // Get all users referred by this user
-    const { data: referrals, error } = await supabase
+    // Get user data with referral stats
+    const { data: user, error } = await supabase
       .from("users")
-      .select("id, name, email, created_at")
-      .eq("referred_by", userId)
-      .order("created_at", { ascending: false })
+      .select("id, name, email, referral_code, referral_count, referral_balance, referred_by, created_at")
+      .eq("id", userId)
+      .single()
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 })
@@ -19,10 +19,10 @@ export async function GET(request: NextRequest, { params }: { params: { userId: 
 
     return NextResponse.json({
       success: true,
-      referrals: referrals || [],
+      user: user, // Returns user data with referral stats
     })
   } catch (error) {
-    console.error("[v0] Get referrals error:", error)
+    console.error("[v0] Get user error:", error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }
