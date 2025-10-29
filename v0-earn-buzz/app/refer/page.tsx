@@ -55,7 +55,7 @@ export default function ReferPage() {
   const fetchUserData = async (userId: string) => {
     try {
       console.log("FETCHING USER DATA FOR:", userId) // DEBUG
-      const response = await fetch(`/api/users/${userId}`)
+      const response = await fetch(`/api/user/${userId}`) // ← FIXED: removed "s" from "users"
       console.log("API RESPONSE STATUS:", response.status) // DEBUG
       const data = await response.json()
       console.log("API RESPONSE DATA:", data) // DEBUG
