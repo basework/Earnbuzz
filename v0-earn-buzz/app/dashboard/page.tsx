@@ -262,12 +262,7 @@ export default function DashboardPage() {
     },
   ]
 
-  const dashboardImages = [
-    "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202025-08-31%20at%2001.13.54_e9100662.jpg-FQVXkkCU0cMzvDsLmVAdDc1C5Pbklm.jpeg",
-    "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202025-08-31%20at%2001.21.56_29382a5d.jpg-R6hYLFSJWIqudf14Kjq7b0Isprxzmr.jpeg",
-    "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202025-08-31%20at%2001.09.20_21a52974.jpg-eR0w5XTgfVotPzC1aMZWNNOnOZHEeW.jpeg",
-  ]
-
+  // FIXED: Fetch user data with proper balance sync
   useEffect(() => {
     const storedUser = localStorage.getItem("tivexx-user")
 
@@ -291,113 +286,30 @@ export default function DashboardPage() {
       user.userId = `TX${Math.random().toString(36).substr(2, 9).toUpperCase()}`
     }
 
-    const fetchReferralBalance = async () => {
+    const fetchUserBalance = async () => {
       try {
-        const response = await fetch(`/api/user/${user.id || user.userId}`)
+        const response = await fetch(`/api/user-balance?userId=${user.id || user.userId}&t=${Date.now()}`)
         const data = await response.json()
-        if (data.success && data.user) {
-          const referralEarnings = (data.user.referral_count || 0) * 10000
+        
+        // Use the actual balance from database
+        const dbBalance = data.balance || 50000
+        
+        // Update both state and localStorage with database balance
+        setBalance(dbBalance)
+        
+        const updatedUser = { ...user, balance: dbBalance }
+        localStorage.setItem("tivexx-user", JSON.stringify(updatedUser))
+        setUserData(updatedUser)
 
-          // FIX: Do not overwrite the user's stored balance with a base+referral round value.
-          // Instead: compute how much referral earnings have already been synced (from localStorage),
-          // add only the new referral delta (if any) to the current stored balance and persist it.
-          // This avoids resetting to round numbers on refresh and ensures balance only increases.
-          const lastSyncedStr = localStorage.getItem("tivexx-last-synced-referral-balance")
-          const lastSynced = lastSyncedStr ? Number.parseInt(lastSyncedStr) : 0
-          const delta = referralEarnings - lastSynced
-
-          if (delta > 0) {
-            // start from whatever balance is currently stored for the user (do not reset)
-            const storedUser = localStorage.getItem("tivexx-user")
-            let currentStoredBalance = user.balance
-            if (storedUser) {
-              try {
-                const su = JSON.parse(storedUser)
-                if (typeof su.balance === "number") {
-                  currentStoredBalance = su.balance
-                }
-              } catch (e) {
-                // fall back to user.balance parsed above
-              }
-            }
-
-            const updatedBalance = currentStoredBalance + delta
-
-            // update local user object and localStorage, but DO NOT reduce balance if delta <= 0
-            user.balance = updatedBalance
-            localStorage.setItem("tivexx-user", JSON.stringify(user))
-            localStorage.setItem("tivexx-last-synced-referral-balance", referralEarnings.toString())
-
-            setBalance(updatedBalance)
-            // keep userData updated too
-            setUserData({ ...user })
-          } else {
-            // No new referral earnings to add; keep existing stored balance (do not overwrite)
-            // Ensure dashboard shows the stored balance
-            const storedUser = localStorage.getItem("tivexx-user")
-            if (storedUser) {
-              try {
-                const su = JSON.parse(storedUser)
-                if (typeof su.balance === "number") {
-                  setBalance(su.balance)
-                  setUserData(su)
-                } else {
-                  setBalance(user.balance)
-                  setUserData(user)
-                }
-              } catch (e) {
-                setBalance(user.balance)
-                setUserData(user)
-              }
-            } else {
-              setBalance(user.balance)
-              setUserData(user)
-            }
-          }
-        } else {
-          // If API did not return referral info, still use local stored balance
-          const storedUser = localStorage.getItem("tivexx-user")
-          if (storedUser) {
-            try {
-              const su = JSON.parse(storedUser)
-              if (typeof su.balance === "number") {
-                setBalance(su.balance)
-                setUserData(su)
-              }
-            } catch (e) {
-              // fallback to user parsed earlier
-              setBalance(user.balance)
-              setUserData(user)
-            }
-          } else {
-            setBalance(user.balance)
-            setUserData(user)
-          }
-        }
       } catch (error) {
-        console.error("[v0] Error fetching referral balance:", error)
-        // On error, prefer showing whatever is in localStorage (do not zero or reset)
-        const storedUser = localStorage.getItem("tivexx-user")
-        if (storedUser) {
-          try {
-            const su = JSON.parse(storedUser)
-            if (typeof su.balance === "number") {
-              setBalance(su.balance)
-              setUserData(su)
-            }
-          } catch (e) {
-            // ignore
-          }
-        } else {
-          setBalance(user.balance)
-          setUserData(user)
-        }
+        console.error("[Dashboard] Error fetching user balance:", error)
+        // Fallback to localStorage data
+        setBalance(user.balance)
+        setUserData(user)
       }
     }
 
-    fetchReferralBalance()
-    setBalance(user.balance)
-    setUserData(user)
+    fetchUserBalance()
 
     setTimeout(() => {
       setShowWithdrawalNotification(true)
@@ -526,7 +438,6 @@ export default function DashboardPage() {
       <div className="text-white rounded-xl p-5 bg-gradient-to-br from-gray-900 via-green-900 to-black shadow-md border border-green-800/30 px-5 py-2.5 mx-2.5 mt-8 mb-4">
         <div className="flex items-center justify-between mb-1">
           <div className="flex items-center gap-2">
-            {/* UPDATED: Profile avatar area with upload support */}
             <div className="relative w-11 h-11 rounded-full bg-white flex items-center justify-center shadow-md overflow-hidden">
               {userData?.profilePicture ? (
                 <img
@@ -538,7 +449,6 @@ export default function DashboardPage() {
                 <span className="font-semibold text-xl text-green-700">{userData?.name.charAt(0)}</span>
               )}
 
-              {/* Invisible file input overlay so clicking avatar opens file picker */}
               <input
                 type="file"
                 accept="image/*"
@@ -756,10 +666,8 @@ export default function DashboardPage() {
         })}
       </div>
 
-      {/* REPLACED: removed image carousel and replaced with "Why Lumexzz?" section (green-themed) */}
       <div className="mt-6">
         <div className="why-glow bg-gradient-to-br from-black via-green-950 to-black rounded-2xl p-6 mb-6 mx-2 border border-green-500/30 relative overflow-hidden">
-          {/* Shimmer overlay added via CSS pseudo-element (see style block below) */}
           <div className="text-center mb-4 relative z-10">
             <h2 className="text-2xl font-bold text-white mb-2">Why Tivexx9ja⁉️</h2>
             <div className="w-16 h-1 bg-gradient-to-r from-green-500 to-yellow-400 mx-auto mb-4"></div>
@@ -826,9 +734,7 @@ export default function DashboardPage() {
         </Link>
       </div>
 
-      {/* Scoped global CSS for animations and glow/shimmer effects */}
       <style jsx global>{`
-        /* bounce slow (gentle) */
         @keyframes bounce-slow {
           0%, 100% {
             transform: translateY(0);
@@ -842,7 +748,6 @@ export default function DashboardPage() {
           animation: bounce-slow 3s ease-in-out infinite;
         }
 
-        /* glow swipe for the Why card */
         @keyframes glow-swipe {
           0% {
             opacity: 0.7;
@@ -861,7 +766,6 @@ export default function DashboardPage() {
           }
         }
 
-        /* shimmer sweep */
         @keyframes shimmer {
           0% {
             left: -120%;
@@ -879,7 +783,6 @@ export default function DashboardPage() {
           overflow: hidden;
         }
 
-        /* soft blurred outer glow that slowly shifts */
         .why-glow::before {
           content: "";
           position: absolute;
@@ -895,7 +798,6 @@ export default function DashboardPage() {
           pointer-events: none;
         }
 
-        /* moving shimmer that glides across the card surface */
         .why-glow::after {
           content: "";
           position: absolute;
@@ -910,7 +812,6 @@ export default function DashboardPage() {
           pointer-events: none;
         }
 
-        /* ensure shimmer doesn't cover text (text stays above) */
         .why-glow > * {
           position: relative;
           z-index: 1;
