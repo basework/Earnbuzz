@@ -299,9 +299,13 @@ export default function DashboardPage() {
         const dbBalance = data.balance || 50000
         const baseBalance = Math.max(localStorageBalance, dbBalance)
         
-        // FIX 2: Add ALL referral earnings (old + new) to main balance
+        // FIX 2: Add referral earnings ONLY ONCE (no double-counting)
         const referralEarnings = data.referral_balance || 0
-        const totalBalance = baseBalance + referralEarnings
+        const lastSyncedReferrals = localStorage.getItem("tivexx-last-synced-referrals") || "0"
+        
+        // Calculate NEW referral earnings since last sync
+        const newReferralEarnings = referralEarnings - parseInt(lastSyncedReferrals)
+        const totalBalance = baseBalance + Math.max(0, newReferralEarnings)
         
         // Update state with the correct total balance
         setBalance(totalBalance)
@@ -312,6 +316,12 @@ export default function DashboardPage() {
           balance: totalBalance
         }
         localStorage.setItem("tivexx-user", JSON.stringify(updatedUser))
+        
+        // Track what we've already synced to prevent double-counting
+        if (newReferralEarnings > 0) {
+          localStorage.setItem("tivexx-last-synced-referrals", referralEarnings.toString())
+        }
+        
         setUserData(updatedUser)
 
       } catch (error) {
