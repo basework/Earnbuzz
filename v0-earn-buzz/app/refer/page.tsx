@@ -59,6 +59,15 @@ export default function ReferPage() {
         referral_count: data.referral_count,
         referral_balance: data.referral_balance
       })
+
+      // ADDED: Update main balance with referral earnings
+      const storedUser = localStorage.getItem("tivexx-user")
+      if (storedUser) {
+        const user = JSON.parse(storedUser)
+        // Add referral balance to main balance (10,000 base + referral earnings)
+        user.balance = 10000 + data.referral_balance
+        localStorage.setItem("tivexx-user", JSON.stringify(user))
+      }
     } catch (error) {
       console.error("[v0] Error fetching user data:", error)
     } finally {
