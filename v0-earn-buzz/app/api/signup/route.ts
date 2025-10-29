@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
     if (referralCode) {
       const { data } = await supabase
         .from("users")
-        .select("id, referral_count, referral_balance")
+        .select("id, referral_count, referral_balance, balance")
         .eq("referral_code", referralCode)
         .maybeSingle()
       if (data) referrerId = data.id
@@ -61,6 +61,7 @@ export async function POST(request: NextRequest) {
         referred_by: referrerId,
         referral_count: 0, // Initialize count
         referral_balance: 0, // Initialize balance
+        balance: 50000, // Initialize main balance with 50,000
       })
       .select("id, name, email, referral_code")
       .single()
@@ -81,7 +82,7 @@ export async function POST(request: NextRequest) {
       // Update referrer's count and balance
       const { data: referrer } = await supabase
         .from("users")
-        .select("referral_count, referral_balance")
+        .select("referral_count, referral_balance, balance")
         .eq("id", referrerId)
         .single()
 
@@ -90,7 +91,8 @@ export async function POST(request: NextRequest) {
           .from("users")
           .update({
             referral_count: (referrer.referral_count || 0) + 1,
-            referral_balance: (referrer.referral_balance || 0) + 10000 // 10,000 naira
+            referral_balance: (referrer.referral_balance || 0) + 10000, // 10,000 naira
+            balance: (referrer.balance || 50000) + 10000 // ADDED: Update main balance too
           })
           .eq("id", referrerId)
       }
