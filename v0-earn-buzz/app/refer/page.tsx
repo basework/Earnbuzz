@@ -48,13 +48,20 @@ export default function ReferPage() {
       return
     }
     const user = JSON.parse(storedUser)
+    console.log("USER FROM LOCALSTORAGE:", user) // DEBUG
     fetchUserData(user.id || user.userId)
   }, [router])
 
   const fetchUserData = async (userId: string) => {
     try {
-      const response = await fetch(`/api/users/${userId}`) // ← FIXED: changed from /api/user/ to /api/users/
+      console.log("FETCHING USER DATA FOR:", userId) // DEBUG
+      const response = await fetch(`/api/users/${userId}`)
+      console.log("API RESPONSE STATUS:", response.status) // DEBUG
       const data = await response.json()
+      console.log("API RESPONSE DATA:", data) // DEBUG
+      console.log("USER DATA FROM API:", data.user) // DEBUG
+      console.log("REFERRAL CODE:", data.user?.referral_code) // DEBUG
+      
       if (data.success) {
         setUserData(data.user)
         const lastSyncedReferralBalance = localStorage.getItem("tivexx-last-synced-referral-balance")
@@ -71,6 +78,8 @@ export default function ReferPage() {
             localStorage.setItem("tivexx-last-synced-referral-balance", currentReferralBalance.toString())
           }
         }
+      } else {
+        console.log("API SUCCESS FALSE:", data) // DEBUG
       }
     } catch (error) {
       console.error("[v0] Error fetching user data:", error)
