@@ -20,12 +20,10 @@ export default function ReferPage() {
   const [userData, setUserData] = useState<UserData | null>(null)
   const [loading, setLoading] = useState(true)
 
-  // 15 enticing messages (4 loan-related, 11 earning-related)
   const referralMessages = [
-    // Earning-focused
     "🔥 Join Tivexx 9ja now and start earning instantly! Complete simple tasks and get paid today! 💰",
     "💸 Ready to earn from home? Tivexx 9ja pays you for simple tasks! Join now and watch your wallet grow!",
-    "🎯 Don’t miss out! Tivexx 9ja gives you instant bonuses and daily earnings — sign up and start winning!",
+    "🎯 Don't miss out! Tivexx 9ja gives you instant bonuses and daily earnings — sign up and start winning!",
     "💰 Tivexx 9ja lets you earn money daily — invite friends and claim free rewards!",
     "🚀 Turn your phone into an ATM! Join Tivexx 9ja and get paid every day!",
     "🎁 Earn ₦10,000 per referral and get instant signup bonuses — Tivexx 9ja is the real deal!",
@@ -34,7 +32,6 @@ export default function ReferPage() {
     "🔥 Make money online easily! Tivexx 9ja gives you instant bonuses and daily claims!",
     "🎉 Earn fast, withdraw easily! Tivexx 9ja is your ticket to daily income!",
     "💵 Invite friends, earn ₦10,000 each! Start your earning journey with Tivexx 9ja today!",
-    // Loan-focused
     "💳 Need cash fast? Tivexx 9ja gives you loans in just 5 minutes — no BVN required!",
     "⚡ Get instant loans without BVN! Tivexx 9ja makes borrowing stress-free!",
     "💸 Need urgent money? Tivexx 9ja offers quick loans in minutes — sign up now!",
@@ -53,26 +50,15 @@ export default function ReferPage() {
 
   const fetchUserData = async (userId: string) => {
     try {
-      const response = await fetch(`/api/user/${userId}?t=${Date.now()}`) // ← ADDED TIMESTAMP TO PREVENT CACHING
+      const response = await fetch(`/api/referral-stats?userId=${userId}&t=${Date.now()}`)
       const data = await response.json()
       
-      if (data.success) {
-        setUserData(data.user)
-        const lastSyncedReferralBalance = localStorage.getItem("tivexx-last-synced-referral-balance")
-        const currentReferralBalance = data.user.referral_balance || 0
-        if (lastSyncedReferralBalance !== currentReferralBalance.toString()) {
-          const storedUser = localStorage.getItem("tivexx-user")
-          if (storedUser) {
-            const user = JSON.parse(storedUser)
-            const baseBalance = user.balance || 10000
-            const previousSyncedBalance = Number.parseInt(lastSyncedReferralBalance || "0")
-            const balanceDifference = currentReferralBalance - previousSyncedBalance
-            user.balance = baseBalance + balanceDifference
-            localStorage.setItem("tivexx-user", JSON.stringify(user))
-            localStorage.setItem("tivexx-last-synced-referral-balance", currentReferralBalance.toString())
-          }
-        }
-      }
+      setUserData({
+        id: userId,
+        referral_code: data.referral_code,
+        referral_count: data.referral_count,
+        referral_balance: data.referral_balance
+      })
     } catch (error) {
       console.error("[v0] Error fetching user data:", error)
     } finally {
@@ -81,10 +67,9 @@ export default function ReferPage() {
   }
 
   const referralLink = userData?.referral_code
-  ? `https://tivexxxx9ja.vercel.app/register?ref=${userData.referral_code}`
-  : "https://tivexxxx9ja.vercel.app/register";
+    ? `https://tivexxxx9ja.vercel.app/register?ref=${userData.referral_code}`
+    : "https://tivexxxx9ja.vercel.app/register"
 
-  // Get random message
   const getRandomMessage = () => {
     const randomIndex = Math.floor(Math.random() * referralMessages.length)
     return referralMessages[randomIndex]
@@ -122,7 +107,6 @@ export default function ReferPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-green-900 to-black pb-20">
-      {/* Header */}
       <div className="bg-gradient-to-r from-green-700 to-green-600 text-white p-6 rounded-b-3xl shadow-lg leading-[0.rem] tracking-tighter">
         <div className="flex items-center mb-6">
           <Link href="/dashboard">
@@ -140,7 +124,6 @@ export default function ReferPage() {
         </div>
       </div>
 
-      {/* How it Works */}
       <div className="px-6 mt-8 leading-3 tracking-tighter">
         <h3 className="text-xl font-bold text-white mb-4">How It Works</h3>
         <div className="space-y-4">
@@ -176,7 +159,6 @@ export default function ReferPage() {
         </div>
       </div>
 
-      {/* Referral Link Section */}
       <div className="px-6 mt-8">
         <div className="mt-4 bg-white/10 backdrop-blur-sm rounded-xl p-4 shadow-sm border border-green-700/30">
           <p className="text-sm text-gray-300 mb-2">Your Referral Link</p>
@@ -199,7 +181,6 @@ export default function ReferPage() {
         </div>
       </div>
 
-      {/* Share Buttons */}
       <div className="px-6 mt-6 flex flex-col gap-4">
         <Button
           onClick={handleWhatsAppShare}
@@ -216,7 +197,6 @@ export default function ReferPage() {
         </Button>
       </div>
 
-      {/* Referral Stats */}
       <div className="px-6 mt-8 mb-6">
         <div className="bg-gradient-to-br from-green-800/50 to-green-900/50 backdrop-blur-sm rounded-2xl p-6 border border-green-700/30">
           <h3 className="text-lg font-bold text-white mb-4 text-center">Your Referral Stats</h3>
@@ -227,7 +207,7 @@ export default function ReferPage() {
             </div>
             <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 text-center shadow-sm border border-green-700/30">
               <p className="text-3xl font-bold text-green-400">
-                {userData ? formatCurrency((userData.referral_count || 0) * 10000) : "₦0"}
+                {userData ? formatCurrency(userData.referral_balance) : "₦0"}
               </p>
               <p className="text-sm text-gray-300 mt-1">Total Earned</p>
             </div>
