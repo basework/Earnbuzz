@@ -53,7 +53,7 @@ export default function ReferPage() {
 
   const fetchUserData = async (userId: string) => {
     try {
-      const response = await fetch(`/api/user/${userId}`)
+      const response = await fetch(`/api/users/${userId}`) // ← FIXED: changed from /api/user/ to /api/users/
       const data = await response.json()
       if (data.success) {
         setUserData(data.user)
