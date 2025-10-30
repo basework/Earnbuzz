@@ -84,7 +84,7 @@ export default function SetupWithdrawalAccountPage() {
     if (!bank || !accountNumber || !accountName) return
     setTransitioning(true)
     setTimeout(() => {
-      window.location.href = "https://tivexx9ja.vercel.app/verifyme"
+    window.location.href = "/verifyme"
     }, 5000)
   }
 
