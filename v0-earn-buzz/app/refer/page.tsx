@@ -12,6 +12,7 @@ interface UserData {
   referral_code: string
   referral_count: number
   referral_balance: number
+  balance?: number  // Optional: To include main balance if displaying here
 }
 
 export default function ReferPage() {
@@ -53,23 +54,43 @@ export default function ReferPage() {
       const response = await fetch(`/api/referral-stats?userId=${userId}&t=${Date.now()}`)
       const data = await response.json()
       
+      // FIXED: Sync main balance WITHOUT overwriting claims or double-adding referrals
+      const storedUser = localStorage.getItem("tivexx-user")
+      let updatedUserBalance = 50000  // Base fallback for new users
+      
+      if (storedUser) {
+        const user = JSON.parse(storedUser)
+        
+        // Preserve local balance (includes claims; fallback to base 50k)
+        const localBalance = user.balance || 50000
+        
+        // Add ONLY new referral earnings (Supabase total minus last synced)
+        const referralEarnings = data.referral_balance || 0
+        const lastSyncedReferrals = localStorage.getItem("tivexx-last-synced-referrals") || "0"
+        const newReferralEarnings = Math.max(0, referralEarnings - parseInt(lastSyncedReferrals))
+        
+        // Total: Base/claims + fresh referrals
+        updatedUserBalance = localBalance + newReferralEarnings
+        
+        // Update & persist
+        const updatedUser = { ...user, balance: updatedUserBalance }
+        localStorage.setItem("tivexx-user", JSON.stringify(updatedUser))
+        
+        // Track to avoid doubles next time
+        if (newReferralEarnings > 0) {
+          localStorage.setItem("tivexx-last-synced-referrals", referralEarnings.toString())
+        }
+      }
+      
       setUserData({
         id: userId,
         referral_code: data.referral_code,
         referral_count: data.referral_count,
-        referral_balance: data.referral_balance
+        referral_balance: data.referral_balance,
+        balance: updatedUserBalance  // Optional: Include if you want to display main balance here
       })
-
-      // ADDED: Update main balance with referral earnings
-      const storedUser = localStorage.getItem("tivexx-user")
-      if (storedUser) {
-        const user = JSON.parse(storedUser)
-        // Add referral balance to main balance (10,000 base + referral earnings)
-        user.balance = 10000 + data.referral_balance
-        localStorage.setItem("tivexx-user", JSON.stringify(user))
-      }
     } catch (error) {
-      console.error("[v0] Error fetching user data:", error)
+      console.error("[Refer] Error fetching user data:", error)
     } finally {
       setLoading(false)
     }
