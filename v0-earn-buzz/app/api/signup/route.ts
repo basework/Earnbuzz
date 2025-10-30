@@ -91,8 +91,8 @@ export async function POST(request: NextRequest) {
           .from("users")
           .update({
             referral_count: (referrer.referral_count || 0) + 1,
-            referral_balance: (referrer.referral_balance || 0) + 10000, // 10,000 naira
-            balance: (referrer.balance || 50000) + 10000 // ADDED: Update main balance too
+            referral_balance: (referrer.referral_balance || 0) + 10000, // 10,000 naira to referral_balance only
+            // REMOVED: No +10000 to main balance here—fetch merges it safely
           })
           .eq("id", referrerId)
       }
