@@ -126,7 +126,7 @@ export default function UpgradeTiersPage() {
               <Button
                 onClick={() => {
                   const amount = tiers[activeTier].price
-                  router.push(`https://tivexx9ja.vercel.app/withdraw/bank-transfer?amount=${amount}`)
+                  router.push(`/withdraw/bank-transfer?amount=${amount}`)
                 }}
                 className="w-1/2 bg-gradient-to-r from-green-600 to-purple-600 text-white font-semibold rounded-xl hover:scale-[1.03] transition-all"
               >
