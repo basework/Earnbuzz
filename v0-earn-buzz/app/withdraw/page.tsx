@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { ArrowLeft, Share2, AlertTriangle } from "lucide-react"
@@ -34,10 +34,11 @@ export default function WithdrawPage() {
 
   const fetchReferralCount = async (userId: string) => {
     try {
-      const response = await fetch(`/api/user/${userId}`)
+      // FIXED: Use query param to match API handler
+      const response = await fetch(`/api/user?userId=${userId}`)
       const data = await response.json()
       if (data.success) {
-        setReferralCount(data.user.referral_count || 0)
+        setReferralCount(data.referral_count || 0)
       }
     } catch (error) {
       console.error("Error fetching referral count:", error)
@@ -51,6 +52,12 @@ export default function WithdrawPage() {
     })
       .format(amount)
       .replace("NGN", "₦")
+
+  // FIXED: Memoize progress width to avoid reflows on re-renders
+  const progressWidth = useMemo(() => 
+    `${Math.min((referralCount / 5) * 100, 100)}%`, 
+    [referralCount]
+  );
 
   const handleCashout = () => {
     if (toggleActive) {
@@ -158,7 +165,7 @@ export default function WithdrawPage() {
           <div className="w-full bg-gray-200 rounded-full h-3">
             <div
               className="bg-gradient-to-r from-green-600 to-purple-600 h-full rounded-full transition-all duration-700"
-              style={{ width: `${Math.min((referralCount / 5) * 100, 100)}%` }}
+              style={{ width: progressWidth }}
             />
           </div>
         </div>

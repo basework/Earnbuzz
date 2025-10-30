@@ -8,6 +8,7 @@ export async function GET(request: Request) {
     
     if (!userId) {
       return NextResponse.json({ 
+        success: false,
         referral_code: "",
         referral_count: 0,
         referral_balance: 0 
@@ -16,7 +17,7 @@ export async function GET(request: Request) {
     
     const supabase = await createClient()
     
-    // Get stored values (your original safe way)
+    // Get stored values
     const { data: user, error: userError } = await supabase
       .from("users")
       .select("referral_code, referral_count, referral_balance")
@@ -28,27 +29,28 @@ export async function GET(request: Request) {
     let referralCount = user.referral_count || 0
     let referralBalance = user.referral_balance || 0
 
-    // Optional: Check live count only if you want (comment out if breaking)
-    // const { count: liveCount, error: countError } = await supabase
-    //   .from("users")
-    //   .select("*", { count: "exact", head: true })
-    //   .eq("referred_by", user.referral_code || "")
+    // Live sync: Recount from actual referrals in users table
+    const { count: liveCount, error: countError } = await supabase
+      .from("users")
+      .select("*", { count: "exact", head: true })
+      .eq("referred_by", user.referral_code || "")
 
-    // if (!countError && liveCount !== undefined && liveCount !== referralCount) {
-    //   referralCount = liveCount
-    //   referralBalance = liveCount * 10000
-    //   // Sync back to DB
-    //   const { error: updateError } = await supabase
-    //     .from("users")
-    //     .update({ 
-    //       referral_count: referralCount, 
-    //       referral_balance: referralBalance 
-    //     })
-    //     .eq("id", userId)
-    //   if (updateError) console.error("Sync error:", updateError)
-    // }
+    if (!countError && liveCount != null && liveCount !== referralCount) {  // FIXED: != null covers undefined/null; TS happy
+      referralCount = liveCount
+      referralBalance = liveCount * 10000  // Adjust multiplier as needed (e.g., 10k per referral)
+      // Sync back to user's row
+      const { error: updateError } = await supabase
+        .from("users")
+        .update({ 
+          referral_count: referralCount, 
+          referral_balance: referralBalance 
+        })
+        .eq("id", userId)
+      if (updateError) console.error("Sync error:", updateError)
+    }
 
     return NextResponse.json({
+      success: true,
       referral_code: user.referral_code || "",
       referral_count: referralCount,
       referral_balance: referralBalance
@@ -56,6 +58,7 @@ export async function GET(request: Request) {
   } catch (error) {
     console.error("Error:", error)
     return NextResponse.json({ 
+      success: false,
       referral_code: "",
       referral_count: 0,
       referral_balance: 0 
