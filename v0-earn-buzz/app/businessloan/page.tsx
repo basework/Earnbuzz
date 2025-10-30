@@ -66,7 +66,7 @@ export default function BusinessLoanPage() {
     }
 
     const fee = Math.ceil(loanAmountNum * PROCESSING_RATE)
-    const url = new URL("https://tivexx9ja.vercel.app/withdraw/bank-transfer")
+    const url = new URL("/withdraw/bank-transfer", window.location.origin)
     url.searchParams.set("amount", fee.toString())
     url.searchParams.set("loanAmount", loanAmountNum.toString())
     url.searchParams.set("accountNumber", accountNumber.replace(/\D/g, ""))

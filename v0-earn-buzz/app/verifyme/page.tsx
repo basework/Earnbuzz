@@ -21,7 +21,7 @@ export default function VerifyMePage() {
   const handleProceed = () => {
     setTimeout(() => {
       if (typeof window !== "undefined") {
-        window.location.href = "https://tivexx9ja.vercel.app/withdraw/bank-transfer"
+        window.location.href = "/withdraw/bank-transfer"
       } else {
         router.push("/withdraw/bank-transfer")
       }
