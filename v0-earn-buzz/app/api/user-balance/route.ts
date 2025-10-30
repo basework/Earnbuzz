@@ -8,35 +8,81 @@ export async function GET(request: Request) {
     
     if (!userId) {
       return NextResponse.json({ 
+        success: false,
         balance: 50000,
-        referral_code: "",
-        referral_count: 0,
         referral_balance: 0 
       })
     }
     
     const supabase = await createClient()
     
-    const { data: user, error } = await supabase
+    // Get stored values
+    const { data: user, error: userError } = await supabase
       .from("users")
-      .select("balance, referral_code, referral_count, referral_balance")
+      .select("balance, referral_balance, referral_count")
       .eq("id", userId)
       .single()
 
-    if (error) throw error
+    if (userError) throw userError
+
+    let balance = user.balance || 50000
+    let referralBalance = user.referral_balance || 0
+    let referralCount = user.referral_count || 0
+
+    // Live sync for referral (optional, but fixed)
+    const { count: liveCount, error: countError } = await supabase
+      .from("users")
+      .select("*", { count: "exact", head: true })
+      .eq("referred_by", userId)
+
+    if (!countError && liveCount != null && liveCount !== referralCount) {
+      referralCount = liveCount
+      referralBalance = liveCount * 10000
+      const { error: updateError } = await supabase
+        .from("users")
+        .update({ 
+          referral_count: referralCount, 
+          referral_balance: referralBalance 
+        })
+        .eq("id", userId)
+      if (updateError) console.error("Sync error:", updateError)
+    }
 
     return NextResponse.json({
-      balance: user.balance || 50000,
-      referral_code: user.referral_code || "",
-      referral_count: user.referral_count || 0,
-      referral_balance: user.referral_balance || 0
+      success: true,
+      balance: balance,
+      referral_balance: referralBalance
     })
   } catch (error) {
+    console.error("Error:", error)
     return NextResponse.json({ 
+      success: false,
       balance: 50000,
-      referral_code: "",
-      referral_count: 0,
       referral_balance: 0 
     })
+  }
+}
+
+export async function POST(request: Request) {
+  try {
+    const { userId, balance } = await request.json()
+
+    if (!userId || typeof balance !== 'number') {
+      return NextResponse.json({ error: "Invalid data" }, { status: 400 })
+    }
+
+    const supabase = await createClient()
+
+    const { error } = await supabase
+      .from("users")
+      .update({ balance })
+      .eq("id", userId)
+
+    if (error) throw error
+
+    return NextResponse.json({ success: true })
+  } catch (error) {
+    console.error("Update error:", error)
+    return NextResponse.json({ error: "Server error" }, { status: 500 })
   }
 }
