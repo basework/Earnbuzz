@@ -34,8 +34,8 @@ export default function WithdrawPage() {
 
   const fetchReferralCount = async (userId: string) => {
     try {
-      // FIXED: Use query param to match API handler
-      const response = await fetch(`/api/user?userId=${userId}`)
+      // FIXED: Point to your actual endpoint
+      const response = await fetch(`/api/referral-stats?userId=${userId}`)
       const data = await response.json()
       if (data.success) {
         setReferralCount(data.referral_count || 0)
