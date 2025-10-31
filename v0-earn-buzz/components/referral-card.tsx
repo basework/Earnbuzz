@@ -52,6 +52,7 @@ export function ReferralCard({ userId }: ReferralCardProps) {
     }
   }
 
+  
 const copyReferralLink = () => {
   if (userData?.referral_code) {
     const link = `${window.location.origin}/register?ref=${userData.referral_code}`
@@ -62,6 +63,7 @@ const copyReferralLink = () => {
     })
   }
 }
+
 
   if (loading) {
     return (

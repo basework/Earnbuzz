@@ -96,10 +96,10 @@ export default function ReferPage() {
     }
   }
 
-  const referralLink = userData?.referral_code
-  ? `${window.location.origin}/register?ref=${userData.referral_code}`
-  : `${window.location.origin}/register`
-  
+const referralLink = userData?.referral_code
+  ? `/register?ref=${userData.referral_code}`
+  : `/register`
+
   const getRandomMessage = () => {
     const randomIndex = Math.floor(Math.random() * referralMessages.length)
     return referralMessages[randomIndex]
@@ -246,5 +246,4 @@ export default function ReferPage() {
       </div>
     </div>
   )
-}   
- 
+}
