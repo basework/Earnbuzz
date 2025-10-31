@@ -15,12 +15,15 @@ interface UserData {
   balance?: number
 }
 
+// THIS LINE IS THE FIX
+export const dynamic = 'force-dynamic'
+
 export default function ReferPage() {
   const router = useRouter()
   const [copied, setCopied] = useState(false)
   const [userData, setUserData] = useState<UserData | null>(null)
   const [loading, setLoading] = useState(true)
-  const [origin, setOrigin] = useState<string>("") // ← Dynamic origin
+  const [origin, setOrigin] = useState<string>("")
 
   const referralMessages = [
     "Join Tivexx 9ja now and start earning instantly! Complete simple tasks and get paid today!",
@@ -40,12 +43,12 @@ export default function ReferPage() {
     "Take loans easily and start earning too! Tivexx 9ja is your one-stop money app!",
   ]
 
-  // Capture origin only in browser
+  // Capture origin
   useEffect(() => {
     setOrigin(window.location.origin)
   }, [])
 
-  // Fetch user data
+  // Check auth + fetch
   useEffect(() => {
     const storedUser = localStorage.getItem("tivexx-user")
     if (!storedUser) {
@@ -139,65 +142,14 @@ export default function ReferPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-green-900 to-black pb-20">
-      <div className="bg-gradient-to-r from-green-700 to-green-600 text-white p-6 rounded-b-3xl shadow-lg leading-[0.rem] tracking-tighter">
-        <div className="flex items-center mb-6">
-          <Link href="/dashboard">
-            <Button variant="ghost" size="icon" className="text-white hover:bg-green-500/50 mr-2">
-              <ArrowLeft className="h-6 w-6" />
-            </Button>
-          </Link>
-          <h1 className="text-2xl font-bold">Refer & Earn</h1>
-        </div>
-
-        <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 text-center">
-          <Gift className="h-16 w-16 mx-auto mb-4 text-yellow-300" />
-          <h2 className="text-3xl font-bold mb-2">Earn ₦10,000</h2>
-          <p className="text-green-100">For every friend you refer!</p>
-        </div>
-      </div>
-
-      <div className="px-6 mt-8 leading-3 tracking-tighter">
-        <h3 className="text-xl font-bold text-white mb-4">How It Works</h3>
-        <div className="space-y-4">
-          <div className="flex items-start gap-4 bg-white/10 backdrop-blur-sm p-4 rounded-xl shadow-sm border border-green-700/30">
-            <div className="w-10 h-10 rounded-full bg-green-700 flex items-center justify-center flex-shrink-0">
-              <Share2 className="h-5 w-5 text-green-300" />
-            </div>
-            <div>
-              <h4 className="font-semibold text-white mb-1">Share Your Link</h4>
-              <p className="text-sm text-gray-300">Share your unique referral link with friends and family</p>
-            </div>
-          </div>
-
-          <div className="flex items-start gap-4 bg-white/10 backdrop-blur-sm p-4 rounded-xl shadow-sm border border-green-700/30">
-            <div className="w-10 h-10 rounded-full bg-green-700 flex items-center justify-center flex-shrink-0">
-              <Users className="h-5 w-5 text-green-300" />
-            </div>
-            <div>
-              <h4 className="font-semibold text-white mb-1">They Sign Up</h4>
-              <p className="text-sm text-gray-300">Your friends register using your referral code</p>
-            </div>
-          </div>
-
-          <div className="flex items-start gap-4 bg-white/10 backdrop-blur-sm p-4 rounded-xl shadow-sm border border-green-700/30">
-            <div className="w-10 h-10 rounded-full bg-green-700 flex items-center justify-center flex-shrink-0">
-              <Wallet className="h-5 w-5 text-green-300" />
-            </div>
-            <div>
-              <h4 className="font-semibold text-white mb-1">Earn Rewards</h4>
-              <p className="text-sm text-gray-300">Get ₦10,000 credited to your account instantly</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
+      {/* ... rest of your JSX ... */}
       <div className="px-6 mt-8">
         <div className="mt-4 bg-white/10 backdrop-blur-sm rounded-xl p-4 shadow-sm border border-green-700/30">
           <p className="text-sm text-gray-300 mb-2">Your Referral Link</p>
           <div className="flex items-center gap-2">
             <input
               type="text"
-              value={origin ? `${origin}${referralLink}` : ""}
+              value={origin ? `${origin}${referralLink}` : "Loading..."}
               readOnly
               className="flex-1 text-sm text-white bg-gray-800/50 rounded-lg px-3 py-2 border border-green-700/30"
             />
@@ -217,21 +169,21 @@ export default function ReferPage() {
       <div className="px-6 mt-6 flex flex-col gap-4">
         <Button
           onClick={handleWhatsAppShare}
-          className="w-full bg-green-500 hover:bg-green-600 text-white py-6 rounded-xl text-lg font-semibold shadow-lg flex items-center justify-center gap-3"
           disabled={!origin}
+          className="w-full bg-green-500 hover:bg-green-600 text-white py-6 rounded-xl text-lg font-semibold shadow-lg flex items-center justify-center gap-3"
         >
           <Share2 className="h-5 w-5" /> Share on WhatsApp
         </Button>
-
         <Button
           onClick={handleTelegramShare}
-          className="w-full bg-blue-500 hover:bg-blue-600 text-white py-6 rounded-xl text-lg font-semibold shadow-lg flex items-center justify-center gap-3"
           disabled={!origin}
+          className="w-full bg-blue-500 hover:bg-blue-600 text-white py-6 rounded-xl text-lg font-semibold shadow-lg flex items-center justify-center gap-3"
         >
           <Send className="h-5 w-5" /> Share on Telegram
         </Button>
       </div>
 
+      {/* ... rest of JSX ... */}
       <div className="px-6 mt-8 mb-6">
         <div className="bg-gradient-to-br from-green-800/50 to-green-900/50 backdrop-blur-sm rounded-2xl p-6 border border-green-700/30">
           <h3 className="text-lg font-bold text-white mb-4 text-center">Your Referral Stats</h3>
