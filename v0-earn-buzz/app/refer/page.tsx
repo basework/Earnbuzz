@@ -21,6 +21,7 @@ export default function ReferPage() {
   const [copied, setCopied] = useState(false)
   const [userData, setUserData] = useState<UserData | null>(null)
   const [loading, setLoading] = useState(true)
+  const [origin, setOrigin] = useState('') // ← WILL BE SET IN useEffect
 
   const referralMessages = [
     "Join Tivexx 9ja now and start earning instantly! Complete simple tasks and get paid today!",
@@ -40,7 +41,12 @@ export default function ReferPage() {
     "Take loans easily and start earning too! Tivexx 9ja is your one-stop money app!",
   ]
 
+  // ALL BROWSER LOGIC IN useEffect
   useEffect(() => {
+    // Set origin
+    setOrigin(window.location.origin)
+
+    // Check auth
     const storedUser = localStorage.getItem('tivexx-user')
     if (!storedUser) {
       router.push('/login')
@@ -50,12 +56,12 @@ export default function ReferPage() {
     const user = JSON.parse(storedUser)
     const userId = user.id || user.userId
 
+    // Fetch data
     fetch(`/api/referral-stats?userId=${userId}&t=${Date.now()}`)
       .then(r => r.json())
       .then(data => {
-        const stored = localStorage.getItem('tivexx-user')
         let balance = 50000
-
+        const stored = localStorage.getItem('tivexx-user')
         if (stored) {
           const u = JSON.parse(stored)
           const localBal = u.balance || 50000
@@ -63,7 +69,6 @@ export default function ReferPage() {
           const lastSync = localStorage.getItem('tivexx-last-synced-referrals') || '0'
           const newEarned = Math.max(0, refEarned - parseInt(lastSync))
           balance = localBal + newEarned
-
           u.balance = balance
           localStorage.setItem('tivexx-user', JSON.stringify(u))
           if (newEarned > 0) {
@@ -83,7 +88,6 @@ export default function ReferPage() {
       .finally(() => setLoading(false))
   }, [router])
 
-  const origin = typeof window !== 'undefined' ? window.location.origin : ''
   const referralLink = userData?.referral_code
     ? `/register?ref=${userData.referral_code}`
     : '/register'
@@ -91,6 +95,7 @@ export default function ReferPage() {
   const getRandomMessage = () => referralMessages[Math.floor(Math.random() * referralMessages.length)]
 
   const handleCopy = () => {
+    if (!origin) return
     const msg = `${getRandomMessage()}\n\nSign up here: ${origin}${referralLink}`
     navigator.clipboard.writeText(msg)
     setCopied(true)
@@ -98,11 +103,13 @@ export default function ReferPage() {
   }
 
   const shareWhatsApp = () => {
+    if (!origin) return
     const msg = `${getRandomMessage()}\n\nSign up here: ${origin}${referralLink}`
     window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank')
   }
 
   const shareTelegram = () => {
+    if (!origin) return
     const link = `${origin}${referralLink}`
     const msg = `${getRandomMessage()}\n\nSign up here: ${link}`
     window.open(`https://t.me/share/url?url=${encodeURIComponent(link)}&text=${encodeURIComponent(msg)}`, '_blank')
@@ -121,6 +128,7 @@ export default function ReferPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-green-900 to-black pb-20">
+      {/* YOUR FULL JSX — SAME AS BEFORE */}
       <div className="bg-gradient-to-r from-green-700 to-green-600 text-white p-6 rounded-b-3xl shadow-lg">
         <div className="flex items-center mb-6">
           <Link href="/dashboard">
@@ -176,7 +184,7 @@ export default function ReferPage() {
           <div className="flex items-center gap-2">
             <input
               type="text"
-              value={origin ? `${origin}${referralLink}` : ''}
+              value={origin ? `${origin}${referralLink}` : 'Loading...'}
               readOnly
               className="flex-1 text-sm text-white bg-gray-800/50 rounded-lg px-3 py-2 border border-green-700/30"
             />
@@ -217,5 +225,5 @@ export default function ReferPage() {
   )
 }
 
-// THIS IS THE ONLY EXPORT THAT MATTERS
-export const dynamic = 'force-dynamic';
+// THIS IS THE ONLY EXPORT
+export const dynamic = 'force-dynamic'
