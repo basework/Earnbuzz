@@ -113,16 +113,19 @@ const referralLink = userData?.referral_code
   }
 
   const handleWhatsAppShare = () => {
-    const message = `${getRandomMessage()}\n\nSign up here: ${referralLink}`
-    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`
-    window.open(whatsappUrl, "_blank")
-  }
+  if (typeof window === 'undefined') return
+  const message = `${getRandomMessage()}\n\nSign up here: ${window.location.origin}${referralLink}`
+  const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`
+  window.open(whatsappUrl, "_blank")
+}
 
   const handleTelegramShare = () => {
-    const message = `${getRandomMessage()}\n\nSign up here: ${referralLink}`
-    const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(referralLink)}&text=${encodeURIComponent(message)}`
-    window.open(telegramUrl, "_blank")
-  }
+  if (typeof window === 'undefined') return
+  const fullLink = `${window.location.origin}${referralLink}`
+  const message = `${getRandomMessage()}\n\nSign up here: ${fullLink}`
+  const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(fullLink)}&text=${encodeURIComponent(message)}`
+  window.open(telegramUrl, "_blank")
+}
 
   if (loading) {
     return (
