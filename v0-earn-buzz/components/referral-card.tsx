@@ -54,7 +54,7 @@ export function ReferralCard({ userId }: ReferralCardProps) {
 
   
 const copyReferralLink = () => {
-  if (userData?.referral_code) {
+  if (userData?.referral_code && typeof window !== 'undefined') {
     const link = `${window.location.origin}/register?ref=${userData.referral_code}`
     navigator.clipboard.writeText(link)
     toast({
