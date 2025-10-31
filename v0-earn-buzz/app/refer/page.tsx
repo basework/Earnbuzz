@@ -1,3 +1,4 @@
+// app/refer/page.tsx
 import dynamic from 'next/dynamic'
 
 export const revalidate = 0
