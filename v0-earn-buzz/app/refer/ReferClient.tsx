@@ -6,7 +6,6 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
 import { formatCurrency } from "@/lib/utils/referral"
-import { getOrigin } from "@/lib/client-only"
 
 interface UserData {
   id: string
@@ -42,57 +41,53 @@ export default function ReferClient() {
   ]
 
   useEffect(() => {
-    setOrigin(getOrigin())
-  }, [])
+    // Import client logic only in browser
+    import('./client-logic').then(({ getOrigin, getLocalStorageItem, setLocalStorageItem }) => {
+      const origin = getOrigin()
+      setOrigin(origin)
 
-  useEffect(() => {
-    if (typeof window === "undefined") return
-    const storedUser = localStorage.getItem("tivexx-user")
-    if (!storedUser) {
-      router.push("/login")
-      return
-    }
-    const user = JSON.parse(storedUser)
-    fetchUserData(user.id || user.userId)
-  }, [router])
-
-  const fetchUserData = async (userId: string) => {
-    if (typeof window === "undefined") return
-    try {
-      const response = await fetch(`/api/referral-stats?userId=${userId}&t=${Date.now()}`)
-      const data = await response.json()
-
-      const storedUser = localStorage.getItem("tivexx-user")
-      let updatedUserBalance = 50000
-
-      if (storedUser) {
-        const user = JSON.parse(storedUser)
-        const localBalance = user.balance || 50000
-        const referralEarnings = data.referral_balance || 0
-        const lastSynced = localStorage.getItem("tivexx-last-synced-referrals") || "0"
-        const newReferralEarnings = Math.max(0, referralEarnings - parseInt(lastSynced))
-        updatedUserBalance = localBalance + newReferralEarnings
-
-        const updatedUser = { ...user, balance: updatedUserBalance }
-        localStorage.setItem("tivexx-user", JSON.stringify(updatedUser))
-        if (newReferralEarnings > 0) {
-          localStorage.setItem("tivexx-last-synced-referrals", referralEarnings.toString())
-        }
+      const storedUser = getLocalStorageItem("tivexx-user")
+      if (!storedUser) {
+        router.push("/login")
+        return
       }
 
-      setUserData({
-        id: userId,
-        referral_code: data.referral_code,
-        referral_count: data.referral_count,
-        referral_balance: data.referral_balance,
-        balance: updatedUserBalance
-      })
-    } catch (error) {
-      console.error("[Refer] Error:", error)
-    } finally {
-      setLoading(false)
-    }
-  }
+      const user = JSON.parse(storedUser)
+      const userId = user.id || user.userId
+
+      fetch(`/api/referral-stats?userId=${userId}&t=${Date.now()}`)
+        .then(res => res.json())
+        .then(data => {
+          const storedUser = getLocalStorageItem("tivexx-user")
+          let updatedUserBalance = 50000
+
+          if (storedUser) {
+            const user = JSON.parse(storedUser)
+            const localBalance = user.balance || 50000
+            const referralEarnings = data.referral_balance || 0
+            const lastSynced = getLocalStorageItem("tivexx-last-synced-referrals") || "0"
+            const newReferralEarnings = Math.max(0, referralEarnings - parseInt(lastSynced))
+            updatedUserBalance = localBalance + newReferralEarnings
+
+            const updatedUser = { ...user, balance: updatedUserBalance }
+            setLocalStorageItem("tivexx-user", JSON.stringify(updatedUser))
+            if (newReferralEarnings > 0) {
+              setLocalStorageItem("tivexx-last-synced-referrals", referralEarnings.toString())
+            }
+          }
+
+          setUserData({
+            id: userId,
+            referral_code: data.referral_code,
+            referral_count: data.referral_count,
+            referral_balance: data.referral_balance,
+            balance: updatedUserBalance
+          })
+        })
+        .catch(console.error)
+        .finally(() => setLoading(false))
+    })
+  }, [router])
 
   const referralLink = userData?.referral_code
     ? `/register?ref=${userData.referral_code}`
@@ -136,8 +131,8 @@ export default function ReferClient() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-green-900 to-black pb-20">
-      {/* Your full JSX — unchanged */}
-      {/* ... paste your full return JSX here ... */}
+      {/* YOUR FULL JSX HERE */}
+      {/* ... */}
     </div>
   )
 }
