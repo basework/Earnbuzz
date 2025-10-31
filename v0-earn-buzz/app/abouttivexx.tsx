@@ -239,7 +239,7 @@ export default function AboutPage() {
                 <p className="text-sm text-white/80 mt-1">
                   Phone: <strong>+44 7851 850678</strong><br />
                   Support: <strong>t.me/tivexx9jasupport</strong><br />
-                  Site: <strong>https://tivexx9ja.vercel.app</strong>
+                  Site: <strong>https://tivexxxx9ja.vercel.app</strong>
                 </p>
               </div>
 

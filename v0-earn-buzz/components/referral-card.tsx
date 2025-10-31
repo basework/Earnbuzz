@@ -52,16 +52,16 @@ export function ReferralCard({ userId }: ReferralCardProps) {
     }
   }
 
-  const copyReferralLink = () => {
-    if (userData?.referral_code) {
-      const link = `https://tivexxxx9ja.vercel.app/register?ref=${userData.referral_code}`
-      navigator.clipboard.writeText(link)
-      toast({
-        title: "Copied!",
-        description: "Referral link copied to clipboard",
-      })
-    }
+const copyReferralLink = () => {
+  if (userData?.referral_code) {
+    const link = `${window.location.origin}/register?ref=${userData.referral_code}`
+    navigator.clipboard.writeText(link)
+    toast({
+      title: "Copied!",
+      description: "Referral link copied to clipboard",
+    })
   }
+}
 
   if (loading) {
     return (

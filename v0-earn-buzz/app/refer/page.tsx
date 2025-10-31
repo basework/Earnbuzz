@@ -97,9 +97,9 @@ export default function ReferPage() {
   }
 
   const referralLink = userData?.referral_code
-    ? `https://tivexxxx9ja.vercel.app/register?ref=${userData.referral_code}`
-    : "https://tivexxxx9ja.vercel.app/register"
-
+  ? `${window.location.origin}/register?ref=${userData.referral_code}`
+  : `${window.location.origin}/register`
+  
   const getRandomMessage = () => {
     const randomIndex = Math.floor(Math.random() * referralMessages.length)
     return referralMessages[randomIndex]
