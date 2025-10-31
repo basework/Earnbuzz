@@ -40,6 +40,7 @@ export default function ReferPage() {
   ]
 
   useEffect(() => {
+    if (typeof window === 'undefined') return
     const storedUser = localStorage.getItem("tivexx-user")
     if (!storedUser) {
       router.push("/login")
@@ -50,6 +51,7 @@ export default function ReferPage() {
   }, [router])
 
   const fetchUserData = async (userId: string) => {
+    if (typeof window === 'undefined') return
     try {
       const response = await fetch(`/api/referral-stats?userId=${userId}&t=${Date.now()}`)
       const data = await response.json()
@@ -96,9 +98,9 @@ export default function ReferPage() {
     }
   }
 
-const referralLink = userData?.referral_code
-  ? `/register?ref=${userData.referral_code}`
-  : `/register`
+  const referralLink = userData?.referral_code
+    ? `/register?ref=${userData.referral_code}`
+    : `/register`
 
   const getRandomMessage = () => {
     const randomIndex = Math.floor(Math.random() * referralMessages.length)
@@ -106,26 +108,27 @@ const referralLink = userData?.referral_code
   }
 
   const handleCopy = () => {
-    const message = `${getRandomMessage()}\n\nSign up here: ${referralLink}`
+    if (typeof window === 'undefined') return
+    const message = `${getRandomMessage()}\n\nSign up here: ${window.location.origin}${referralLink}`
     navigator.clipboard.writeText(message)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
   }
 
   const handleWhatsAppShare = () => {
-  if (typeof window === 'undefined') return
-  const message = `${getRandomMessage()}\n\nSign up here: ${window.location.origin}${referralLink}`
-  const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`
-  window.open(whatsappUrl, "_blank")
-}
+    if (typeof window === 'undefined') return
+    const message = `${getRandomMessage()}\n\nSign up here: ${window.location.origin}${referralLink}`
+    const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`
+    window.open(whatsappUrl, "_blank")
+  }
 
   const handleTelegramShare = () => {
-  if (typeof window === 'undefined') return
-  const fullLink = `${window.location.origin}${referralLink}`
-  const message = `${getRandomMessage()}\n\nSign up here: ${fullLink}`
-  const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(fullLink)}&text=${encodeURIComponent(message)}`
-  window.open(telegramUrl, "_blank")
-}
+    if (typeof window === 'undefined') return
+    const fullLink = `${window.location.origin}${referralLink}`
+    const message = `${getRandomMessage()}\n\nSign up here: ${fullLink}`
+    const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(fullLink)}&text=${encodeURIComponent(message)}`
+    window.open(telegramUrl, "_blank")
+  }
 
   if (loading) {
     return (
