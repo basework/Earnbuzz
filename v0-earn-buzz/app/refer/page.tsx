@@ -12,7 +12,7 @@ interface UserData {
   referral_code: string
   referral_count: number
   referral_balance: number
-  balance?: number  // Optional: To include main balance if displaying here
+  balance?: number
 }
 
 export default function ReferPage() {
@@ -20,27 +20,33 @@ export default function ReferPage() {
   const [copied, setCopied] = useState(false)
   const [userData, setUserData] = useState<UserData | null>(null)
   const [loading, setLoading] = useState(true)
+  const [origin, setOrigin] = useState<string>("") // ← Dynamic origin
 
   const referralMessages = [
-    "🔥 Join Tivexx 9ja now and start earning instantly! Complete simple tasks and get paid today! 💰",
-    "💸 Ready to earn from home? Tivexx 9ja pays you for simple tasks! Join now and watch your wallet grow!",
-    "🎯 Don't miss out! Tivexx 9ja gives you instant bonuses and daily earnings — sign up and start winning!",
-    "💰 Tivexx 9ja lets you earn money daily — invite friends and claim free rewards!",
-    "🚀 Turn your phone into an ATM! Join Tivexx 9ja and get paid every day!",
-    "🎁 Earn ₦10,000 per referral and get instant signup bonuses — Tivexx 9ja is the real deal!",
-    "🌟 Get rewarded for every invite! Join Tivexx 9ja and earn without stress!",
-    "💼 Tivexx 9ja pays you for completing simple tasks — join today and start earning!",
-    "🔥 Make money online easily! Tivexx 9ja gives you instant bonuses and daily claims!",
-    "🎉 Earn fast, withdraw easily! Tivexx 9ja is your ticket to daily income!",
-    "💵 Invite friends, earn ₦10,000 each! Start your earning journey with Tivexx 9ja today!",
-    "💳 Need cash fast? Tivexx 9ja gives you loans in just 5 minutes — no BVN required!",
-    "⚡ Get instant loans without BVN! Tivexx 9ja makes borrowing stress-free!",
-    "💸 Need urgent money? Tivexx 9ja offers quick loans in minutes — sign up now!",
-    "🚀 Take loans easily and start earning too! Tivexx 9ja is your one-stop money app!",
+    "Join Tivexx 9ja now and start earning instantly! Complete simple tasks and get paid today!",
+    "Ready to earn from home? Tivexx 9ja pays you for simple tasks! Join now and watch your wallet grow!",
+    "Don't miss out! Tivexx 9ja gives you instant bonuses and daily earnings — sign up and start winning!",
+    "Tivexx 9ja lets you earn money daily — invite friends and claim free rewards!",
+    "Turn your phone into an ATM! Join Tivexx 9ja and get paid every day!",
+    "Earn ₦10,000 per referral and get instant signup bonuses — Tivexx 9ja is the real deal!",
+    "Get rewarded for every invite! Join Tivexx 9ja and earn without stress!",
+    "Tivexx 9ja pays you for completing simple tasks — join today and start earning!",
+    "Make money online easily! Tivexx 9ja gives you instant bonuses and daily claims!",
+    "Earn fast, withdraw easily! Tivexx 9ja is your ticket to daily income!",
+    "Invite friends, earn ₦10,000 each! Start your earning journey with Tivexx 9ja today!",
+    "Need cash fast? Tivexx 9ja gives you loans in just 5 minutes — no BVN required!",
+    "Get instant loans without BVN! Tivexx 9ja makes borrowing stress-free!",
+    "Need urgent money? Tivexx 9ja offers quick loans in minutes — sign up now!",
+    "Take loans easily and start earning too! Tivexx 9ja is your one-stop money app!",
   ]
 
+  // Capture origin only in browser
   useEffect(() => {
-    if (typeof window === 'undefined') return
+    setOrigin(window.location.origin)
+  }, [])
+
+  // Fetch user data
+  useEffect(() => {
     const storedUser = localStorage.getItem("tivexx-user")
     if (!storedUser) {
       router.push("/login")
@@ -51,34 +57,24 @@ export default function ReferPage() {
   }, [router])
 
   const fetchUserData = async (userId: string) => {
-    if (typeof window === 'undefined') return
     try {
       const response = await fetch(`/api/referral-stats?userId=${userId}&t=${Date.now()}`)
       const data = await response.json()
       
-      // FIXED: Sync main balance WITHOUT overwriting claims or double-adding referrals
       const storedUser = localStorage.getItem("tivexx-user")
-      let updatedUserBalance = 50000  // Base fallback for new users
+      let updatedUserBalance = 50000
       
       if (storedUser) {
         const user = JSON.parse(storedUser)
-        
-        // Preserve local balance (includes claims; fallback to base 50k)
         const localBalance = user.balance || 50000
-        
-        // Add ONLY new referral earnings (Supabase total minus last synced)
         const referralEarnings = data.referral_balance || 0
         const lastSyncedReferrals = localStorage.getItem("tivexx-last-synced-referrals") || "0"
         const newReferralEarnings = Math.max(0, referralEarnings - parseInt(lastSyncedReferrals))
-        
-        // Total: Base/claims + fresh referrals
         updatedUserBalance = localBalance + newReferralEarnings
-        
-        // Update & persist
+
         const updatedUser = { ...user, balance: updatedUserBalance }
         localStorage.setItem("tivexx-user", JSON.stringify(updatedUser))
         
-        // Track to avoid doubles next time
         if (newReferralEarnings > 0) {
           localStorage.setItem("tivexx-last-synced-referrals", referralEarnings.toString())
         }
@@ -89,7 +85,7 @@ export default function ReferPage() {
         referral_code: data.referral_code,
         referral_count: data.referral_count,
         referral_balance: data.referral_balance,
-        balance: updatedUserBalance  // Optional: Include if you want to display main balance here
+        balance: updatedUserBalance
       })
     } catch (error) {
       console.error("[Refer] Error fetching user data:", error)
@@ -108,23 +104,23 @@ export default function ReferPage() {
   }
 
   const handleCopy = () => {
-    if (typeof window === 'undefined') return
-    const message = `${getRandomMessage()}\n\nSign up here: ${window.location.origin}${referralLink}`
+    if (!origin) return
+    const message = `${getRandomMessage()}\n\nSign up here: ${origin}${referralLink}`
     navigator.clipboard.writeText(message)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
   }
 
   const handleWhatsAppShare = () => {
-    if (typeof window === 'undefined') return
-    const message = `${getRandomMessage()}\n\nSign up here: ${window.location.origin}${referralLink}`
+    if (!origin) return
+    const message = `${getRandomMessage()}\n\nSign up here: ${origin}${referralLink}`
     const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`
     window.open(whatsappUrl, "_blank")
   }
 
   const handleTelegramShare = () => {
-    if (typeof window === 'undefined') return
-    const fullLink = `${window.location.origin}${referralLink}`
+    if (!origin) return
+    const fullLink = `${origin}${referralLink}`
     const message = `${getRandomMessage()}\n\nSign up here: ${fullLink}`
     const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(fullLink)}&text=${encodeURIComponent(message)}`
     window.open(telegramUrl, "_blank")
@@ -201,7 +197,7 @@ export default function ReferPage() {
           <div className="flex items-center gap-2">
             <input
               type="text"
-              value={referralLink}
+              value={origin ? `${origin}${referralLink}` : ""}
               readOnly
               className="flex-1 text-sm text-white bg-gray-800/50 rounded-lg px-3 py-2 border border-green-700/30"
             />
@@ -210,6 +206,7 @@ export default function ReferPage() {
               variant="outline"
               size="icon"
               className="flex-shrink-0 border-green-600 text-green-400 hover:bg-green-700/30 bg-transparent"
+              disabled={!origin}
             >
               <Copy className="h-4 w-4" />
             </Button>
@@ -221,6 +218,7 @@ export default function ReferPage() {
         <Button
           onClick={handleWhatsAppShare}
           className="w-full bg-green-500 hover:bg-green-600 text-white py-6 rounded-xl text-lg font-semibold shadow-lg flex items-center justify-center gap-3"
+          disabled={!origin}
         >
           <Share2 className="h-5 w-5" /> Share on WhatsApp
         </Button>
@@ -228,6 +226,7 @@ export default function ReferPage() {
         <Button
           onClick={handleTelegramShare}
           className="w-full bg-blue-500 hover:bg-blue-600 text-white py-6 rounded-xl text-lg font-semibold shadow-lg flex items-center justify-center gap-3"
+          disabled={!origin}
         >
           <Send className="h-5 w-5" /> Share on Telegram
         </Button>
