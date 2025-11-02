@@ -59,7 +59,7 @@ export default function VerifyMePage() {
             <CreditCard className="h-12 w-12 text-yellow-400 animate-spin-slow mr-3 glow-coin" />
             <div>
               <p className="text-4xl md:text-5xl font-extrabold text-yellow-300">
-                ₦5,000
+                ₦10,000
               </p>
               <p className="text-sm text-green-100 mt-1">
                 One-time verification fee, <strong>automatically refunded</strong> to your dashboard balance after successful verification.
