@@ -87,12 +87,12 @@ export default function VerifyMePage() {
               className="w-full py-4 text-lg font-semibold bg-gradient-to-r from-purple-800 via-purple-700 to-green-600 hover:from-purple-900 hover:to-green-700 hover:shadow-xl transition-all flex items-center justify-center space-x-2"
               onClick={handleProceed}
             >
-              <span>Proceed to Verification (₦5,000)</span>
+              <span>Proceed to Verification</span>
               <ArrowRight className="h-5 w-5" />
             </Button>
 
             <p className="mt-3 text-xs text-green-200 text-center animate-slide-up">
-              The ₦5,000 verification payment will be added back to your dashboard balance after verification.
+              The ₦10,000 verification payment will be added back to your dashboard balance after verification.
             </p>
           </div>
         </div>
