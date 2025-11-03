@@ -47,7 +47,7 @@ const AVAILABLE_TASKS: Task[] = [
   },
   {
     id: "2nd WhatsApp",
-    platform: "Telegram",
+    platform: "Whatsapp",
     description: "join our 2nd WhatsApp",
     category: "Social Media",
     reward: 5000,
@@ -73,12 +73,12 @@ const AVAILABLE_TASKS: Task[] = [
     icon: "💰",
   },
   {
-    id: "tivexx youtube",
+    id: "Tivexx youtube",
     platform: "Social media",
     description: "subscribe now",
     category: "Survey",
     reward: 5000,
-    link: "https://lumexzz.netlify.app/login?ref=REF3F83306D",
+    link: "https://youtube.com/@tivexx9ja?si=hO5B3vPUYBB1Fl6J",
     icon: "🌐",
   },
 ]
