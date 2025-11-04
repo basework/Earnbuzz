@@ -11,6 +11,8 @@ function PayKeyPaymentContent() {
 
   const fullName = searchParams.get("fullName") || ""
   const amount = searchParams.get("amount") || "5,000"
+  // Reference ID: prefer ?ref=... in URL, otherwise fallback to 500222
+  const referenceId = searchParams.get("ref") || "500222"
   
   const bankName = "Moniepoint"
   const accountNumber = "6420606119"
@@ -42,6 +44,11 @@ function PayKeyPaymentContent() {
         <div className="text-center">
           <h2 className="text-lg font-semibold mb-2">Complete this bank transfer to proceed</h2>
           <p className="text-2xl font-extrabold text-yellow-300">₦ {amount}</p>
+
+          {/* Reference ID */}
+          <div className="text-center mt-4">
+            <p className="text-xs text-gray-200 tracking-widest">REFERENCE ID - {referenceId}</p>
+          </div>
         </div>
 
         <div className="space-y-4">
