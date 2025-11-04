@@ -11,7 +11,7 @@ function PayKeyPaymentContent() {
 
   const fullName = searchParams.get("fullName") || ""
   const amount = searchParams.get("amount") || "5,000"
-  // Reference ID: prefer ?ref=... in URL, otherwise fallback to 500222
+  // Reference ID: dynamic from ?ref= or fallback
   const referenceId = searchParams.get("ref") || "500222"
   
   const bankName = "Moniepoint"
@@ -44,11 +44,6 @@ function PayKeyPaymentContent() {
         <div className="text-center">
           <h2 className="text-lg font-semibold mb-2">Complete this bank transfer to proceed</h2>
           <p className="text-2xl font-extrabold text-yellow-300">₦ {amount}</p>
-
-          {/* Reference ID */}
-          <div className="text-center mt-4">
-            <p className="text-xs text-gray-200 tracking-widest">REFERENCE ID - {referenceId}</p>
-          </div>
         </div>
 
         <div className="space-y-4">
@@ -56,6 +51,7 @@ function PayKeyPaymentContent() {
             <p className="text-sm">Bank Name</p>
             <p className="font-bold">{bankName}</p>
           </div>
+
           <div className="flex items-center justify-between p-3 bg-white/10 rounded-lg">
             <div>
               <p className="text-sm">Account Number</p>
@@ -70,12 +66,14 @@ function PayKeyPaymentContent() {
               {copiedField === "account" ? "Copied!" : "Copy"}
             </Button>
           </div>
+
           <div className="p-3 bg-white/10 rounded-lg">
             <p className="text-sm">Account Name</p>
             <p className="font-bold">{accountName}</p>
           </div>
         </div>
 
+        {/* Upload section */}
         <div className="mt-4">
           <label className="block text-sm font-medium mb-2">Upload Payment Screenshot *</label>
           <input
@@ -86,8 +84,13 @@ function PayKeyPaymentContent() {
           />
         </div>
 
+        {/* Reference ID - placed below upload, as shown in the photo */}
+        <div className="text-center mt-3">
+          <p className="text-xs text-gray-200 tracking-widest">REFERENCE ID - {referenceId}</p>
+        </div>
+
         <Button
-          className="w-full h-12 bg-gradient-to-r from-purple-800 to-green-600 hover:from-purple-900 hover:to-green-700 text-white font-semibold mt-4"
+          className="w-full h-12 bg-gradient-to-r from-purple-800 to-green-600 hover:from-purple-900 hover:to-green-700 text-white font-semibold mt-2"
           onClick={handleConfirmPayment}
         >
           I have made this bank Transfer
