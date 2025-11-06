@@ -42,12 +42,12 @@ export default function RegisterPage() {
     }
   }, [mounted, searchParams])
 
-  {/*const handleWhatsAppSupport = () => {
+    const handleWhatsAppSupport = () => {
     const phoneNumber = "2349059089490"
     const message = encodeURIComponent("hello, am from Tivexx.")
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`
     window.open(whatsappUrl, "_blank")
-  }*/}
+  }
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault()
