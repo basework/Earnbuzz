@@ -9,9 +9,9 @@ export default function UpgradeTiersPage() {
   const [activeTier, setActiveTier] = useState<number | null>(null)
 
   const tiers = [
-    { name: "Tier 2", price: 20000, label: "₦20,000", icon: "🥈" },
-    { name: "Tier 3", price: 30000, label: "₦30,000", icon: "🥉" },
-    { name: "Tier 4", price: 40000, label: "₦40,000", icon: "🏆" },
+    { name: "Tier 2", price: 10000, label: "₦10,000", icon: "🥈" },
+    { name: "Tier 3", price: 20000, label: "₦20,000", icon: "🥉" },
+    { name: "Tier 4", price: 30000, label: "₦30,000", icon: "🏆" },
     { name: "Tier 5", price: 50000, label: "₦50,000", icon: "👑" },
   ]
 
