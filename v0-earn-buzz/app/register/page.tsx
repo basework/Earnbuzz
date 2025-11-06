@@ -173,7 +173,7 @@ export default function RegisterPage() {
               className="w-full h-14 rounded-full bg-orange-600 hover:bg-orange-700 text-white text-lg"
               disabled={loading}
             >
-              {loading ? "Registering..." : "Register"}
+              {loading ? "Registering..." : "Register & get ₦50,000"}
             </Button>
           </form>
 
