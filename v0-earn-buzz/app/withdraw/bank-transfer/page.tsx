@@ -15,7 +15,7 @@ function PayKeyPaymentContent() {
   const referenceId = searchParams.get("ref") || "500222"
   
   const bankName = "Moniepoint"
-  const accountNumber = "6420606119"
+  const accountNumber = "5159157949"
   const accountName = "Moses Barika"
 
   const [copiedField, setCopiedField] = useState<string | null>(null)
