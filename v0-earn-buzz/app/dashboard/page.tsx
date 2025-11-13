@@ -754,7 +754,7 @@ export default function DashboardPage() {
         </Link>
         <Link href="/spin" className="flex flex-col items-center text-gray-400 hover:text-green-400">
           <Gamepad2 className="h-6 w-6" />
-          <span className="text-xs font-medium">Spin & Win</span>
+          <span className="text-xs font-medium">About Tivexx</span>
         </Link>
         <Link href="/refer" className="flex flex-col items-center text-gray-400 hover:text-green-400">
           <User className="h-6 w-6" />
