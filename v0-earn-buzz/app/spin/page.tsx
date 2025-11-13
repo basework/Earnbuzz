@@ -43,14 +43,13 @@ export default function AboutPage() {
     )
   }
 
-  // If user not found show friendly prompt instead of redirect
   if (!userData) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#0b6b3a] via-[#153d2f] to-[#071218] p-6">
         <Card className="max-w-lg w-full p-6 text-center">
           <h2 className="text-xl font-bold mb-2">Welcome to Tivexx9ja</h2>
           <p className="text-sm text-gray-600">
-            Sign in to access the full About page and learn how Tivexx9ja helps thousands of Nigerians earn, grow, and withdraw without fees.
+            Sign in to access the full About page and learn how Tivexx9ja helps thousands of Nigerians earn, grow and withdraw without fees.
           </p>
           <div className="mt-6 flex gap-3 justify-center">
             <Button onClick={() => router.push("/login")} className="bg-amber-400 text-black">
@@ -67,12 +66,12 @@ export default function AboutPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0b6b3a] via-[#153d2f] to-[#071218] text-white">
-      {/* Fixed Back to Dashboard button top left */}
+      
+      {/* Back button */}
       <div className="fixed top-4 left-4 z-50">
         <button
           onClick={() => router.push("/dashboard")}
           className="p-2 rounded-md bg-white/6 hover:bg-white/10 backdrop-blur-sm flex items-center gap-2"
-          aria-label="Back to dashboard"
         >
           <ArrowLeft className="h-5 w-5 text-white" />
           <span className="text-sm">Dashboard</span>
@@ -80,76 +79,92 @@ export default function AboutPage() {
       </div>
 
       <div className="max-w-5xl mx-auto px-4 py-12">
+
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl md:text-4xl font-extrabold leading-tight">Tivexx9ja</h1>
-          <p className="text-sm text-green-100 mt-2">
-            Real earning opportunities for Nigerians with transparent payouts and reliable support
-          </p>
+          <h1 className="text-3xl md:text-4xl font-extrabold leading-tight animate-glow">Tivexx9ja</h1>
+          <p className="text-sm text-green-100 mt-2">Nigeria's most reliable earning and financial empowerment platform</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+          {/* LEFT SECTION */}
           <div className="lg:col-span-2 space-y-6">
-            <Card className="p-6 bg-white/6 backdrop-blur-lg border border-white/8 shadow-lg">
+
+            {/* Mission */}
+            <Card className="p-6 bg-white/6 backdrop-blur-lg border border-white/8 shadow-lg animate-fade-up">
               <h2 className="text-xl font-bold text-emerald-200 mb-2">Our Mission</h2>
               <p className="text-sm text-white/80 leading-relaxed">
-                Tivexx9ja exists to provide dependable earning pathways for Nigerians. We offer short tasks, referral rewards, and fast withdrawals to help users support their families, fund education, and grow small businesses.
-                We operate with transparency and commitment to keeping withdrawals free.
+                Tivexx9ja was created to empower Nigerians with real earning opportunities, fast withdrawals and trusted digital services. 
+                Our system helps users support their families, grow their hustle, fund education and improve their financial life.
               </p>
 
-              <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 gap-3">
                 <div className="p-3 rounded-lg bg-white/4 border border-white/8 text-center">
-                  <div className="text-xs text-white/80">Community</div>
-                  <div className="text-2xl font-bold text-amber-300">100,000+</div>
-                  <div className="text-xs text-white/70 mt-1">Active users</div>
+                  <div className="text-xs text-white/70">Active Users</div>
+                  <div className="text-2xl font-bold text-amber-300">45,000+</div>
                 </div>
-
                 <div className="p-3 rounded-lg bg-white/4 border border-white/8 text-center">
-                  <div className="text-xs text-white/80">Paid Out</div>
+                  <div className="text-xs text-white/70">Total Payouts</div>
                   <div className="text-2xl font-bold text-emerald-300">Millions</div>
-                  <div className="text-xs text-white/70 mt-1">Total paid</div>
                 </div>
-
                 <div className="p-3 rounded-lg bg-white/4 border border-white/8 text-center">
-                  <div className="text-xs text-white/80">Support</div>
+                  <div className="text-xs text-white/70">Support</div>
                   <div className="text-2xl font-bold text-purple-300">24/7</div>
-                  <div className="text-xs text-white/70 mt-1">Telegram</div>
                 </div>
               </div>
             </Card>
 
-            <Card className="p-6 bg-white/6 backdrop-blur-lg border border-white/8 shadow-lg">
-              <h3 className="text-lg font-bold mb-2">Why users trust Tivexx9ja</h3>
-              <ul className="text-sm text-white/80 space-y-2 list-inside pl-4">
-                <li>Clear and transparent payouts with no hidden fees</li>
-                <li>Fast withdrawals and responsive Telegram support</li>
-                <li>Identity checks and anti-fraud measures to protect accounts</li>
-                <li>Designed for mobile users across Nigeria</li>
+            {/* NEW SECTION YOU REQUESTED */}
+            <Card className="p-6 bg-white/6 backdrop-blur-lg border border-white/8 shadow-lg animate-fade-up">
+              <h2 className="text-xl font-bold text-emerald-200 mb-3">What You Can Do on Tivexx9ja</h2>
+
+              <ul className="space-y-3 text-sm text-white/85 leading-relaxed list-disc pl-5">
+                <li>Earn ₦1,000 every 1 minute by claiming through the daily earnings button.</li>
+                <li>Earn ₦10,000 per verified referral with no limits. Some users earn from 50 to 300 referrals.</li>
+                <li>Access Quick Loans instantly with no collateral or BVN required.</li>
+                <li>Apply for Business Loans from ₦500,000 to ₦5,000,000 with a 3 percent processing fee and 12 months repayment.</li>
+                <li>Earn through tasks, referrals, bonuses and performance rewards.</li>
+                <li>Withdrawals remain 100 percent free forever.</li>
               </ul>
             </Card>
 
-            <Card className="p-6 bg-white/6 backdrop-blur-lg border border-white/8 shadow-lg">
-              <h3 className="text-lg font-bold mb-3">Impact stories</h3>
+            {/* Why trust Tivexx */}
+            <Card className="p-6 bg-white/6 backdrop-blur-lg border border-white/8 shadow-lg animate-fade-up">
+              <h3 className="text-lg font-bold mb-2">Why Nigerians Trust Tivexx9ja</h3>
+              <ul className="text-sm text-white/80 space-y-2 list-disc pl-5">
+                <li>No hidden charges and no withdrawal fees.</li>
+                <li>Super fast customer support through Telegram.</li>
+                <li>Identity and anti-fraud systems that protect users.</li>
+                <li>Built specifically for Nigerian users' needs.</li>
+              </ul>
+            </Card>
+
+            {/* Impact Stories */}
+            <Card className="p-6 bg-white/6 backdrop-blur-lg border border-white/8 shadow-lg animate-fade-up">
+              <h3 className="text-lg font-bold mb-3">Impact Across Nigeria</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div className="p-3 rounded-lg bg-white/5">
                   <div className="font-semibold">Education Support</div>
-                  <div className="text-sm text-white/80 mt-1">Students used earnings to continue school and pay fees.</div>
+                  <div className="text-sm text-white/75 mt-1">Students used Tivexx earnings to continue school.</div>
                 </div>
                 <div className="p-3 rounded-lg bg-white/5">
-                  <div className="font-semibold">Small Business Growth</div>
-                  <div className="text-sm text-white/80 mt-1">Traders reinvested earnings to scale their businesses.</div>
+                  <div className="font-semibold">Business Support</div>
+                  <div className="text-sm text-white/75 mt-1">Small business owners expanded their capital through earnings.</div>
                 </div>
               </div>
             </Card>
+
           </div>
 
-          {/* Right column: contact and official note - only two buttons here */}
+          {/* RIGHT COLUMN */}
           <aside className="space-y-6">
-            <Card className="p-6 bg-white/6 backdrop-blur-lg border border-white/8 shadow-lg text-center">
-              <div className="text-sm text-white/80 mb-2">Official notice</div>
-              <div className="text-xl font-bold text-amber-300 mt-2">Verified and compliant</div>
+
+            <Card className="p-6 bg-white/6 backdrop-blur-lg border border-white/8 shadow-lg text-center animate-fade-up">
+              <div className="text-sm text-white/80 mb-2">Official Notice</div>
+              <div className="text-xl font-bold text-amber-300">Verified Platform</div>
               <p className="text-xs text-white/70 mt-2">
-                We follow identity verification rules and adopt measures that protect users from fraud and automated accounts. Verification steps are transparent and refunds are applied where applicable.
+                Tivexx9ja strictly follows identity checks and fraud prevention systems to protect all users and ensure transparent earnings.
               </p>
 
               <div className="mt-4 space-y-3">
@@ -170,48 +185,21 @@ export default function AboutPage() {
             </Card>
 
             <Card className="p-4 bg-white/5 border border-white/8 shadow-lg text-xs">
-              <div className="font-semibold text-white/80">Our promise</div>
+              <div className="font-semibold text-white/80">Our Promise</div>
               <p className="text-white/70 mt-2">
-                Withdrawals will remain free for users. We will continue to protect your balance and pay reliably.
+                Withdrawals will remain free forever. Tivexx9ja will always ensure your balance is protected and paid.
               </p>
             </Card>
           </aside>
         </div>
 
-        {/* Footer contact area with only one link to channel and support repeated is avoided */}
-        <div className="mt-10">
-          <Card className="p-6 bg-white/6 backdrop-blur-lg border border-white/10 shadow-lg">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-              <div>
-                <div className="text-lg font-bold">Contact Us</div>
-                <div className="text-sm text-white/80 mt-1">
-                  Telegram support: @Tivexx9jaSupport
-                  <br />
-                  Email: tivexx9ja@gmail.com
-                </div>
-              </div>
-
-              <div className="flex gap-3">
-                <Button
-                  onClick={() => window.open("https://t.me/tivexx9jasupport", "_blank")}
-                  className="bg-amber-400 text-black"
-                >
-                  Contact Support
-                </Button>
-
-                <Button onClick={() => window.open("https://t.me/Tivexx9jacommunity", "_blank")} className="bg-transparent border border-white/20">
-                  Open Channel
-                </Button>
-              </div>
-            </div>
-          </Card>
-        </div>
-
-        <div className="text-center text-xs text-white/60 mt-8">
+        {/* Footer */}
+        <div className="text-center text-xs text-white/60 mt-10">
           Tivexx9ja © {new Date().getFullYear()}. All rights reserved.
         </div>
       </div>
 
+      {/* Animations */}
       <style jsx global>{`
         @keyframes glow {
           0% { text-shadow: 0 0 6px rgba(16,185,129,0.06); }
@@ -219,7 +207,7 @@ export default function AboutPage() {
           100% { text-shadow: 0 0 6px rgba(16,185,129,0.06); }
         }
         @keyframes fadeUp {
-          from { opacity: 0; transform: translateY(12px); }
+          from { opacity: 0; transform: translateY(20px); }
           to { opacity: 1; transform: translateY(0); }
         }
         .animate-glow { animation: glow 3s ease-in-out infinite; }
