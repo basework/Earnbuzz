@@ -100,7 +100,7 @@ export default function AboutPage() {
               <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div className="p-3 rounded-lg bg-white/4 border border-white/8 text-center">
                   <div className="text-xs text-white/80">Community</div>
-                  <div className="text-2xl font-bold text-amber-300">45,000+</div>
+                  <div className="text-2xl font-bold text-amber-300">100,000+</div>
                   <div className="text-xs text-white/70 mt-1">Active users</div>
                 </div>
 
@@ -187,7 +187,7 @@ export default function AboutPage() {
                 <div className="text-sm text-white/80 mt-1">
                   Telegram support: @Tivexx9jaSupport
                   <br />
-                  Email: support@tivexx9ja.com
+                  Email: tivexx9ja@gmail.com
                 </div>
               </div>
 
