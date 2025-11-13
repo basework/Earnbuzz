@@ -1,10 +1,9 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import Link from "next/link"
 import { useRouter } from "next/navigation"
+import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
-import { Logo } from "@/components/logo"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 
@@ -14,42 +13,50 @@ export default function AboutPage() {
   const [loaded, setLoaded] = useState(false)
 
   useEffect(() => {
-    const storedUser = localStorage.getItem("tivexx9ja-user")
-    if (!storedUser) {
-      router.push("/login")
-      return
-    }
     try {
-      setUserData(JSON.parse(storedUser))
+      const stored =
+        localStorage.getItem("tivexx9ja-user") ||
+        localStorage.getItem("tivexx-user") ||
+        localStorage.getItem("momo-credit-user") ||
+        localStorage.getItem("tivexx-user-old")
+
+      if (stored) {
+        setUserData(JSON.parse(stored))
+      } else {
+        setUserData(null)
+      }
     } catch (e) {
       setUserData(null)
+    } finally {
+      setLoaded(true)
     }
-    setLoaded(true)
-  }, [router])
+  }, [])
 
   if (!loaded) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-900 via-indigo-900 to-black">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#0b6b3a] via-[#153d2f] to-[#071218] p-6">
         <div className="text-center text-white">
           <div className="animate-spin rounded-full h-12 w-12 border-4 border-white border-t-transparent mb-4" />
-          <div>Loading Tivexx9ja...</div>
+          <div className="text-lg font-medium">Loading Tivexx9ja</div>
         </div>
       </div>
     )
   }
 
-  // If userData was removed or invalid, fall back to a simple message
   if (!userData) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-900 via-indigo-900 to-black p-6">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#0b6b3a] via-[#153d2f] to-[#071218] p-6">
         <Card className="max-w-lg w-full p-6 text-center">
           <h2 className="text-xl font-bold mb-2">Welcome to Tivexx9ja</h2>
           <p className="text-sm text-gray-600">
-            Please sign in to view the full About page.
+            Sign in to access the full About page and learn how Tivexx9ja helps thousands of Nigerians earn, grow and withdraw without fees.
           </p>
-          <div className="mt-6">
-            <Button onClick={() => router.push("/login")} className="bg-green-600 hover:bg-green-700 text-white">
+          <div className="mt-6 flex gap-3 justify-center">
+            <Button onClick={() => router.push("/login")} className="bg-amber-400 text-black">
               Sign in
+            </Button>
+            <Button onClick={() => router.push("/dashboard")} variant="ghost" className="border border-white/10">
+              Back to Dashboard
             </Button>
           </div>
         </Card>
@@ -58,167 +65,141 @@ export default function AboutPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#2a0760] via-[#4c1d95] to-[#0b6b3a] text-white">
-      <div className="max-w-5xl mx-auto px-4 py-8">
+    <div className="min-h-screen bg-gradient-to-br from-[#0b6b3a] via-[#153d2f] to-[#071218] text-white">
+      
+      {/* Back button */}
+      <div className="fixed top-4 left-4 z-50">
+        <button
+          onClick={() => router.push("/dashboard")}
+          className="p-2 rounded-md bg-white/6 hover:bg-white/10 backdrop-blur-sm flex items-center gap-2"
+        >
+          <ArrowLeft className="h-5 w-5 text-white" />
+          <span className="text-sm">Dashboard</span>
+        </button>
+      </div>
+
+      <div className="max-w-5xl mx-auto px-4 py-12">
+
         {/* Header */}
-        <div className="flex items-center gap-3 mb-6">
-          <Link href="/dashboard" className="flex items-center gap-2">
-            <button aria-label="Back" className="p-2 rounded-md bg-white/10 hover:bg-white/12">
-              <ArrowLeft className="h-5 w-5 text-white" />
-            </button>
-            <span className="font-medium">About</span>
-          </Link>
+        <div className="text-center mb-8">
+          <h1 className="text-3xl md:text-4xl font-extrabold leading-tight animate-glow">Tivexx9ja</h1>
+          <p className="text-sm text-green-100 mt-2">Nigeria's most reliable earning and financial empowerment platform</p>
         </div>
 
-        {/* Hero */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center mb-8">
-          <div className="col-span-2">
-            <div className="flex items-center gap-4">
-              <div className="w-28 h-28 rounded-xl bg-gradient-to-br from-[#9b5cff] via-[#7c3aed] to-[#10b981] flex items-center justify-center shadow-2xl transform transition-transform hover:scale-105">
-                <Logo className="w-20 h-20" />
-              </div>
-              <div>
-                <h1 className="text-3xl md:text-4xl font-extrabold leading-tight animate-glow">
-                  Tivexx9ja
-                </h1>
-                <p className="text-sm text-green-100 mt-1">
-                  A trusted Nigerian earning platform focused on authentic opportunities, transparent payouts and support for communities.
-                </p>
-              </div>
-            </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-            <Card className="mt-6 p-6 bg-white/6 backdrop-blur-lg border border-white/10 shadow-xl animate-fade-up">
-              <h2 className="text-xl font-bold mb-2 text-emerald-200">Our Mission</h2>
+          {/* LEFT SECTION */}
+          <div className="lg:col-span-2 space-y-6">
+
+            {/* Mission */}
+            <Card className="p-6 bg-white/6 backdrop-blur-lg border border-white/8 shadow-lg animate-fade-up">
+              <h2 className="text-xl font-bold text-emerald-200 mb-2">Our Mission</h2>
               <p className="text-sm text-white/80 leading-relaxed">
-                To empower Nigerians with real earning opportunities that change lives. We deliver daily micro tasks, referral rewards and fast withdrawals to help users support themselves and their families.
-                We build with trust, transparency and a commitment to making payouts free for withdrawals at all times.
+                Tivexx9ja was created to empower Nigerians with real earning opportunities, fast withdrawals and trusted digital services. 
+                Our system helps users support their families, grow their hustle, fund education and improve their financial life.
+              </p>
+
+              <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 gap-3">
+                <div className="p-3 rounded-lg bg-white/4 border border-white/8 text-center">
+                  <div className="text-xs text-white/70">Active Users</div>
+                  <div className="text-2xl font-bold text-amber-300">100,000+</div>
+                </div>
+                <div className="p-3 rounded-lg bg-white/4 border border-white/8 text-center">
+                  <div className="text-xs text-white/70">Total Payouts</div>
+                  <div className="text-2xl font-bold text-emerald-300">Millions</div>
+                </div>
+                <div className="p-3 rounded-lg bg-white/4 border border-white/8 text-center">
+                  <div className="text-xs text-white/70">Support</div>
+                  <div className="text-2xl font-bold text-purple-300">24/7</div>
+                </div>
+              </div>
+            </Card>
+
+            {/* NEW SECTION YOU REQUESTED */}
+            <Card className="p-6 bg-white/6 backdrop-blur-lg border border-white/8 shadow-lg animate-fade-up">
+              <h2 className="text-xl font-bold text-emerald-200 mb-3">What You Can Do on Tivexx9ja</h2>
+
+              <ul className="space-y-3 text-sm text-white/85 leading-relaxed list-disc pl-5">
+                <li>Earn ₦1,000 every 1 minute by claiming through the daily earnings button.</li>
+                <li>Earn ₦10,000 per verified referral with no limits. Some users earn from 50 to 300 referrals.</li>
+                <li>Access Quick Loans instantly with no collateral or BVN required.</li>
+                <li>Apply for Business Loans from ₦500,000 to ₦5,000,000 with a 3 percent processing fee and 12 months repayment.</li>
+                <li>Earn through tasks, referrals, bonuses and performance rewards.</li>
+                <li>Withdrawals remain 100 percent free forever.</li>
+              </ul>
+            </Card>
+
+            {/* Why trust Tivexx */}
+            <Card className="p-6 bg-white/6 backdrop-blur-lg border border-white/8 shadow-lg animate-fade-up">
+              <h3 className="text-lg font-bold mb-2">Why Nigerians Trust Tivexx9ja</h3>
+              <ul className="text-sm text-white/80 space-y-2 list-disc pl-5">
+                <li>No hidden charges and no withdrawal fees.</li>
+                <li>Super fast customer support through Telegram.</li>
+                <li>Identity and anti-fraud systems that protect users.</li>
+                <li>Built specifically for Nigerian users' needs.</li>
+              </ul>
+            </Card>
+
+            {/* Impact Stories */}
+            <Card className="p-6 bg-white/6 backdrop-blur-lg border border-white/8 shadow-lg animate-fade-up">
+              <h3 className="text-lg font-bold mb-3">Impact Across Nigeria</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="p-3 rounded-lg bg-white/5">
+                  <div className="font-semibold">Education Support</div>
+                  <div className="text-sm text-white/75 mt-1">Students used Tivexx earnings to continue school.</div>
+                </div>
+                <div className="p-3 rounded-lg bg-white/5">
+                  <div className="font-semibold">Business Support</div>
+                  <div className="text-sm text-white/75 mt-1">Small business owners expanded their capital through earnings.</div>
+                </div>
+              </div>
+            </Card>
+
+          </div>
+
+          {/* RIGHT COLUMN */}
+          <aside className="space-y-6">
+
+            <Card className="p-6 bg-white/6 backdrop-blur-lg border border-white/8 shadow-lg text-center animate-fade-up">
+              <div className="text-sm text-white/80 mb-2">Official Notice</div>
+              <div className="text-xl font-bold text-amber-300">Verified Platform</div>
+              <p className="text-xs text-white/70 mt-2">
+                Tivexx9ja strictly follows identity checks and fraud prevention systems to protect all users and ensure transparent earnings.
+              </p>
+
+              <div className="mt-4 space-y-3">
+                <Button
+                  onClick={() => window.open("https://t.me/tivexx9jasupport", "_blank")}
+                  className="w-full bg-gradient-to-r from-purple-800 via-purple-700 to-green-600 text-white"
+                >
+                  Contact Support
+                </Button>
+
+                <Button
+                  onClick={() => window.open("https://t.me/Tivexx9jacommunity", "_blank")}
+                  className="w-full bg-amber-400 text-black"
+                >
+                  Join Community Channel
+                </Button>
+              </div>
+            </Card>
+
+            <Card className="p-4 bg-white/5 border border-white/8 shadow-lg text-xs">
+              <div className="font-semibold text-white/80">Our Promise</div>
+              <p className="text-white/70 mt-2">
+                Withdrawals will remain free forever. Tivexx9ja will always ensure your balance is protected and paid.
               </p>
             </Card>
-          </div>
-
-          <div>
-            <Card className="p-5 bg-white/5 backdrop-blur-md border border-white/8 shadow-xl">
-              <div className="text-center">
-                <div className="text-sm text-white/80 mb-2">Community</div>
-                <div className="text-3xl font-bold text-amber-300">45,000+</div>
-                <div className="text-xs text-white/70 mt-1">Active users and growing</div>
-
-                <div className="mt-4">
-                  <Button
-                    onClick={() => window.open("https://t.me/tivexx9jasupport", "_blank")}
-                    className="w-full bg-gradient-to-r from-purple-800 via-purple-700 to-green-600 hover:from-purple-900 hover:to-green-700 text-white"
-                  >
-                    Join Support on Telegram
-                  </Button>
-                </div>
-              </div>
-            </Card>
-          </div>
+          </aside>
         </div>
 
-        {/* What you can do */}
-        <section className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <Card className="p-6 bg-white/6 backdrop-blur-lg border border-white/10 shadow-xl">
-            <h3 className="font-bold text-lg mb-2">Earn Everyday</h3>
-            <p className="text-sm text-white/80">Complete short tasks and watch your balance grow. Tasks are simple and designed for mobile users.</p>
-          </Card>
-
-          <Card className="p-6 bg-white/6 backdrop-blur-lg border border-white/10 shadow-xl">
-            <h3 className="font-bold text-lg mb-2">Refer and Grow</h3>
-            <p className="text-sm text-white/80">Refer friends to increase earnings. Referral rewards help families afford school fees and grow small businesses.</p>
-          </Card>
-
-          <Card className="p-6 bg-white/6 backdrop-blur-lg border border-white/10 shadow-xl">
-            <h3 className="font-bold text-lg mb-2">Withdraw with Confidence</h3>
-            <p className="text-sm text-white/80">Fast withdrawal processing with transparent policies. Withdrawal is free for users on Tivexx9ja.</p>
-          </Card>
-        </section>
-
-        {/* Features / Benefits */}
-        <section className="mb-8">
-          <h3 className="text-2xl font-bold mb-4">Platform Highlights</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="p-4 rounded-xl bg-gradient-to-br from-white/3 to-white/6 border border-white/8 shadow-md">
-              <div className="font-semibold text-emerald-200">Identity Protection</div>
-              <p className="text-sm text-white/80 mt-2">Secure verification and documentation to keep your account safe from bots and fraud.</p>
-            </div>
-
-            <div className="p-4 rounded-xl bg-gradient-to-br from-white/3 to-white/6 border border-white/8 shadow-md">
-              <div className="font-semibold text-amber-300">Transparent Refunds</div>
-              <p className="text-sm text-white/80 mt-2">Any required checks or fees for verification are handled transparently and refunded where applicable.</p>
-            </div>
-
-            <div className="p-4 rounded-xl bg-gradient-to-br from-white/3 to-white/6 border border-white/8 shadow-md">
-              <div className="font-semibold text-purple-300">Customer First</div>
-              <p className="text-sm text-white/80 mt-2">24/7 support available on Telegram and through our official channels for fast help.</p>
-            </div>
-          </div>
-        </section>
-
-        {/* How it works */}
-        <section className="mb-8">
-          <h3 className="text-2xl font-bold mb-4">How it works</h3>
-          <div className="grid md:grid-cols-3 gap-4">
-            <div className="p-4 rounded-xl bg-white/6 border border-white/8">
-              <div className="font-semibold">1. Join</div>
-              <div className="text-sm text-white/80 mt-2">Register with your phone and create your account.</div>
-            </div>
-            <div className="p-4 rounded-xl bg-white/6 border border-white/8">
-              <div className="font-semibold">2. Complete Tasks</div>
-              <div className="text-sm text-white/80 mt-2">Watch short clips, complete micro tasks and collect rewards.</div>
-            </div>
-            <div className="p-4 rounded-xl bg-white/6 border border-white/8">
-              <div className="font-semibold">3. Withdraw</div>
-              <div className="text-sm text-white/80 mt-2">Meet withdrawal requirements or upgrade for alternate withdrawal options.</div>
-            </div>
-          </div>
-        </section>
-
-        {/* Testimonials / Impact */}
-        <section className="mb-8">
-          <h3 className="text-2xl font-bold mb-4">Real Impact</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="p-4 rounded-lg bg-white/4 border border-white/8">
-              <div className="font-semibold">Education Support</div>
-              <p className="text-sm text-white/80 mt-1">Students have used Tivexx9ja earnings to pay school fees and continue their education.</p>
-            </div>
-            <div className="p-4 rounded-lg bg-white/4 border border-white/8">
-              <div className="font-semibold">Small Business Growth</div>
-              <p className="text-sm text-white/80 mt-1">Traders reinvest earnings to scale inventory and reach more customers.</p>
-            </div>
-          </div>
-        </section>
-
-        {/* Contact and footer */}
-        <section className="mb-8">
-          <Card className="p-6 bg-white/5 backdrop-blur-lg border border-white/10 shadow-xl">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-              <div>
-                <div className="font-bold text-lg">Contact Us</div>
-                <div className="text-sm text-white/80 mt-1">
-                  Telegram support: @Tivexx9jaSupport
-                  <br />
-                  Email: support@tivexx9ja.com
-                </div>
-              </div>
-              <div className="flex gap-3">
-                <Button onClick={() => window.open("https://tivexx9ja.vercel.app/register?ref=EB19K473QL", "_blank")} className="bg-amber-400 text-black hover:brightness-95">
-                  Create Account
-                </Button>
-                <Button onClick={() => window.open("https://t.me/tivexx9jasupport", "_blank")} className="bg-transparent border border-white/20">
-                  Open Support
-                </Button>
-              </div>
-            </div>
-          </Card>
-        </section>
-
-        <div className="text-center text-xs text-white/60 mt-8">
+        {/* Footer */}
+        <div className="text-center text-xs text-white/60 mt-10">
           Tivexx9ja © {new Date().getFullYear()}. All rights reserved.
         </div>
       </div>
 
-      {/* Global styles and animations */}
+      {/* Animations */}
       <style jsx global>{`
         @keyframes glow {
           0% { text-shadow: 0 0 6px rgba(16,185,129,0.06); }
@@ -226,7 +207,7 @@ export default function AboutPage() {
           100% { text-shadow: 0 0 6px rgba(16,185,129,0.06); }
         }
         @keyframes fadeUp {
-          from { opacity: 0; transform: translateY(12px); }
+          from { opacity: 0; transform: translateY(20px); }
           to { opacity: 1; transform: translateY(0); }
         }
         .animate-glow { animation: glow 3s ease-in-out infinite; }
