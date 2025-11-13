@@ -752,7 +752,7 @@ export default function DashboardPage() {
           <Home className="h-6 w-6" />
           <span className="text-xs font-medium">Home</span>
         </Link>
-        <Link href="/spin" className="flex flex-col items-center text-gray-400 hover:text-green-400">
+        <Link href="/about" className="flex flex-col items-center text-gray-400 hover:text-green-400">
           <Gamepad2 className="h-6 w-6" />
           <span className="text-xs font-medium">Spin & Win</span>
         </Link>
