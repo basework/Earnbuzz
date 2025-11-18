@@ -73,12 +73,12 @@ const AVAILABLE_TASKS: Task[] = [
     icon: "💰",
   },
   {
-    id: "Tivexx youtube",
-    platform: "Social media",
+    id: "Website ads",
+    platform: "Telegram",
     description: "subscribe now",
     category: "Survey",
     reward: 5000,
-    link: "https://youtube.com/@tivexx9ja?si=hO5B3vPUYBB1Fl6J",
+    link: "https://t.me/paygo_finance",
     icon: "🌐",
   },
 ]
