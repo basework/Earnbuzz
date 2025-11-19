@@ -78,7 +78,7 @@ const AVAILABLE_TASKS: Task[] = [
     description: "subscribe now",
     category: "Survey",
     reward: 5000,
-    link: "https://t.me/paygo_finance",
+    link: "https://youtube.com/@tivexx9ja?si=ES80gH_IokScUeNz",
     icon: "🌐",
   },
 ]
