@@ -10,7 +10,7 @@ function PayKeyPaymentContent() {
   const searchParams = useSearchParams()
 
   const fullName = searchParams.get("fullName") || ""
-  const amount = searchParams.get("amount") || "5,000"
+  const amount = searchParams.get("amount") || "10,000"
   // Reference ID: dynamic from ?ref= or fallback
   const referenceId = searchParams.get("ref") || "500222"
   
