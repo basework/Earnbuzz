@@ -16,7 +16,7 @@ function PayKeyPaymentContent() {
   
   const bankName = "Moniepoint"
   const accountNumber = "6919261359"
-  const accountName = "Deborah Vincent"
+  const accountName = "David Odum"
 
   const [copiedField, setCopiedField] = useState<string | null>(null)
   const [proof, setProof] = useState<File | null>(null)
