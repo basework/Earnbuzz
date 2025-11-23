@@ -51,7 +51,7 @@ const AVAILABLE_TASKS: Task[] = [
     description: "join our 2nd WhatsApp",
     category: "Social Media",
     reward: 5000,
-    link: "https://whatsapp.com/channel/0029VbBnF1q9MF8rtAHEih2p",
+    link: "https://whatsapp.com/channel/0029Vb7JLVT8F2p6NI4EMJ01",
     icon: "🤖",
   },
   {
