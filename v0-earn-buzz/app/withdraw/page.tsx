@@ -177,7 +177,7 @@ export default function WithdrawPage() {
               onClick={handleCashout}
               className="w-full py-5 text-lg font-semibold rounded-xl text-white bg-gradient-to-r from-green-600 to-purple-700 hover:scale-[1.02] transition-all shadow-lg animate-slide-in"
             >
-              WITHDRAW
+              WITHDRAW NOW
             </Button>
           ) : (
             <div className="space-y-4 animate-fade-in">
