@@ -5,11 +5,13 @@ import type React from "react"
 import { useState, useEffect, useRef, useCallback } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import { ArrowLeft, Camera, LogOut, User, Bell, BellOff, Info, HelpCircle, Key, GitBranch } from "lucide-react" // Added Key, GitBranch
+import { ArrowLeft, Camera, LogOut, User, Bell, BellOff, Info, HelpCircle, Key, GitBranch, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
 import { LogoutConfirmation } from "@/components/logout-confirmation"
 import { requestNotificationPermission, showLocalNotification } from "@/services/notification-service"
+import { uploadImageToSupabase } from "@/lib/supabase/image-upload"
+import { useToast } from "@/hooks/use-toast"
 
 interface UserData {
   name: string
@@ -19,15 +21,18 @@ interface UserData {
   hasMomoNumber: boolean
   profilePicture?: string
   level?: string
+  userId?: string
 }
 
 export default function ProfilePage() {
   const router = useRouter()
+  const { toast } = useToast()
   const [userData, setUserData] = useState<UserData | null>(null)
   const [showLogoutConfirmation, setShowLogoutConfirmation] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [previewImage, setPreviewImage] = useState<string | null>(null)
   const [notificationsEnabled, setNotificationsEnabled] = useState(false)
+  const [isUploading, setIsUploading] = useState(false)
 
   useEffect(() => {
     // Check if user is logged in
@@ -83,15 +88,59 @@ export default function ProfilePage() {
     }
   }
 
-  const handleSaveProfilePicture = () => {
-    if (previewImage && userData) {
+  const handleSaveProfilePicture = async () => {
+    if (!previewImage || !userData) return
+
+    setIsUploading(true)
+    try {
+      // Get the file from the input
+      const file = fileInputRef.current?.files?.[0]
+      if (!file) {
+        toast({
+          title: "Error",
+          description: "No file selected",
+          variant: "destructive",
+        })
+        setIsUploading(false)
+        return
+      }
+
+      // Upload to Supabase Storage
+      const userId = userData.userId || userData.email || "user"
+      const imageUrl = await uploadImageToSupabase(file, "profile-pics", userId)
+
+      if (!imageUrl) {
+        toast({
+          title: "Upload Failed",
+          description: "Could not upload image to storage",
+          variant: "destructive",
+        })
+        setIsUploading(false)
+        return
+      }
+
+      // Update user data with new image URL
       const updatedUser = {
         ...userData,
-        profilePicture: previewImage,
+        profilePicture: imageUrl,
       }
       localStorage.setItem("momo-credit-user", JSON.stringify(updatedUser))
       setUserData(updatedUser)
       setPreviewImage(null)
+
+      toast({
+        title: "Success",
+        description: "Profile picture updated successfully",
+      })
+    } catch (error) {
+      console.error("Error saving profile picture:", error)
+      toast({
+        title: "Error",
+        description: "Failed to save profile picture",
+        variant: "destructive",
+      })
+    } finally {
+      setIsUploading(false)
     }
   }
 
@@ -173,11 +222,18 @@ export default function ProfilePage() {
               </div>
             </div>
             <div className="flex gap-3 justify-center">
-              <Button variant="outline" onClick={handleCancelProfilePicture} className="rounded-full bg-transparent">
+              <Button variant="outline" onClick={handleCancelProfilePicture} className="rounded-full bg-transparent" disabled={isUploading}>
                 Cancel
               </Button>
-              <Button onClick={handleSaveProfilePicture} className="bg-orange-600 hover:bg-orange-700 rounded-full">
-                Save Picture
+              <Button onClick={handleSaveProfilePicture} className="bg-orange-600 hover:bg-orange-700 rounded-full" disabled={isUploading}>
+                {isUploading ? (
+                  <>
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    Uploading...
+                  </>
+                ) : (
+                  "Save Picture"
+                )}
               </Button>
             </div>
           </div>
