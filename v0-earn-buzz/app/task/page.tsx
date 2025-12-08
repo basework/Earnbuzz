@@ -81,6 +81,24 @@ const AVAILABLE_TASKS: Task[] = [
     link: "https://youtube.com/@tivexx9ja?si=ES80gH_IokScUeNz",
     icon: "🌐",
   },
+  {
+    id: "ad-link-1",
+    platform: "Sponsor",
+    description: "Visit our sponsor and earn",
+    category: "Advertisement",
+    reward: 5000,
+    link: "https://www.effectivegatecpm.com/h4imq50bhm?key=65343fceb6fb8fcf829db72d0dfeab90",
+    icon: "🔗",
+  },
+  {
+    id: "ad-link-2",
+    platform: "Sponsor",
+    description: "Visit our sponsor and earn",
+    category: "Advertisement",
+    reward: 5000,
+    link: "https://www.effectivegatecpm.com/h4imq50bhm?key=65343fceb6fb8fcf829db72d0dfeab90",
+    icon: "🔗",
+  },
 ]
 
 export default function TaskPage() {
