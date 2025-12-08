@@ -19,7 +19,6 @@ function PayKeyPaymentContent() {
   const accountName = "David Odum"
 
   const [copiedField, setCopiedField] = useState<string | null>(null)
-  const [proof, setProof] = useState<File | null>(null)
 
   const copyToClipboard = (text: string, field: string) => {
     navigator.clipboard.writeText(text)
@@ -28,12 +27,12 @@ function PayKeyPaymentContent() {
   }
 
   const handleConfirmPayment = () => {
-    if (!proof) {
-      alert("Please upload your payment screenshot before continuing.")
-      return
-    }
     const params = new URLSearchParams({ fullName, amount })
     router.push(`/paykeys/confirmation?${params.toString()}`)
+  }
+
+  const openTelegramSupport = () => {
+    window.open("https://t.me/Tivexx9jacommunity", "_blank")
   }
 
   return (
@@ -73,20 +72,23 @@ function PayKeyPaymentContent() {
           </div>
         </div>
 
-        {/* Upload section */}
-        <div className="mt-4">
-          <label className="block text-sm font-medium mb-2">Upload Payment Screenshot *</label>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={(e) => setProof(e.target.files?.[0] || null)}
-            className="w-full text-sm border border-gray-300 rounded-lg px-3 py-2"
-          />
-        </div>
-
         {/* Reference ID - placed below upload, as shown in the photo */}
         <div className="text-center mt-3">
           <p className="text-xs text-gray-200 tracking-widest">REFERENCE ID - {referenceId}</p>
+        </div>
+
+        {/* Telegram Support Section */}
+        <div className="mt-6 p-4 bg-white/10 rounded-lg border border-green-300">
+          <p className="text-sm font-semibold mb-3">📸 Send Payment Proof</p>
+          <p className="text-xs mb-3">
+            After making the transfer, please send a screenshot of your payment receipt to our Telegram support team for verification.
+          </p>
+          <Button
+            onClick={openTelegramSupport}
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold"
+          >
+            📱 Open Telegram Support
+          </Button>
         </div>
 
         <Button
