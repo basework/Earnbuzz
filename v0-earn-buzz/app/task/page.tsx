@@ -37,6 +37,15 @@ const AVAILABLE_TASKS: Task[] = [
     icon: "🔗",
   },
   {
+    id: "ad-link-3",
+    platform: "Sponsor",
+    description: "Visit our sponsor and earn",
+    category: "Advertisement",
+    reward: 5000,
+    link: "https://www.effectivegatecpm.com/jdxt7gxiu?key=099939751dcb9e93525a630bf2c593f5",
+    icon: "🔗",
+  },
+  {
     id: "telegram-channel",
     platform: "Telegram",
     description: "join our telegram channel",
