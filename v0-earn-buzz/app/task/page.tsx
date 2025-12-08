@@ -43,7 +43,7 @@ const AVAILABLE_TASKS: Task[] = [
     category: "Advertisement",
     reward: 5000,
     link: "https://www.effectivegatecpm.com/jdxt7gxiu?key=099939751dcb9e93525a630bf2c593f5",
-    icon: "🔗",
+    icon: "📊",
   },
   {
     id: "telegram-channel",

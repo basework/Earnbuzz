@@ -32,6 +32,23 @@ export default function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
           <main className="min-h-screen max-w-md mx-auto bg-[#fff5f0]">{children}</main>
         </ThemeProvider>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              if ('serviceWorker' in navigator && typeof window !== 'undefined') {
+                window.addEventListener('load', function() {
+                  navigator.serviceWorker.register('/sw.js')
+                    .then(function(registration) {
+                      console.log('Service Worker registered with scope:', registration.scope);
+                    })
+                    .catch(function(error) {
+                      console.log('Service Worker registration failed:', error);
+                    });
+                });
+              }
+            `
+          }}
+        />
         <a href="https://www.effectivegatecpm.com/h4imq50bhm?key=65343fceb6fb8fcf829db72d0dfeab90" target="_blank" rel="noopener noreferrer" style={{ display: 'none' }}>Smartlink for tivexx9jaa.vercel.app</a>
         <script
           type="text/javascript"
