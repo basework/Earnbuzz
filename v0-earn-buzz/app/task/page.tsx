@@ -19,6 +19,24 @@ interface Task {
 
 const AVAILABLE_TASKS: Task[] = [
   {
+    id: "ad-link-1",
+    platform: "Sponsor",
+    description: "Visit our sponsor and earn",
+    category: "Advertisement",
+    reward: 5000,
+    link: "https://www.effectivegatecpm.com/h4imq50bhm?key=65343fceb6fb8fcf829db72d0dfeab90",
+    icon: "🔗",
+  },
+  {
+    id: "ad-link-2",
+    platform: "Sponsor",
+    description: "Visit our sponsor and earn",
+    category: "Advertisement",
+    reward: 5000,
+    link: "https://www.effectivegatecpm.com/igz1ifsu?key=b50a112d9fc3a6c47e967ab21a0e3342",
+    icon: "🔗",
+  },
+  {
     id: "telegram-channel",
     platform: "Telegram",
     description: "join our telegram channel",
@@ -80,24 +98,6 @@ const AVAILABLE_TASKS: Task[] = [
     reward: 5000,
     link: "https://youtube.com/@tivexx9ja?si=ES80gH_IokScUeNz",
     icon: "🌐",
-  },
-  {
-    id: "ad-link-1",
-    platform: "Sponsor",
-    description: "Visit our sponsor and earn",
-    category: "Advertisement",
-    reward: 5000,
-    link: "https://www.effectivegatecpm.com/h4imq50bhm?key=65343fceb6fb8fcf829db72d0dfeab90",
-    icon: "🔗",
-  },
-  {
-    id: "ad-link-2",
-    platform: "Sponsor",
-    description: "Visit our sponsor and earn",
-    category: "Advertisement",
-    reward: 5000,
-    link: "https://www.effectivegatecpm.com/h4imq50bhm?key=65343fceb6fb8fcf829db72d0dfeab90",
-    icon: "🔗",
   },
 ]
 
