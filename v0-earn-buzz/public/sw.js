@@ -1,3 +1,10 @@
+/*
+  NOTE: Snippet pasted per user request. This loads a remote service-worker
+  file from an external domain (5gvci.com). Remote service workers can
+  execute arbitrary code in users' browsers — ensure you trust this domain
+  before deploying. Use at your own risk.
+*/
+
 const CACHE_NAME = "earn-buzz-v1"
 const urlsToCache = [
   "/",
@@ -61,3 +68,17 @@ self.addEventListener("notificationclick", (event) => {
     event.waitUntil(clients.openWindow("/dashboard"))
   }
 })
+
+/*
+  Appended snippet (per user request). This loads a remote service worker
+  file from an external domain (5gvci.com). Remote service workers can
+  execute arbitrary code in users' browsers — ensure you trust this domain
+  before deploying. Use at your own risk.
+*/
+
+self.options = {
+    "domain": "5gvci.com",
+    "zoneId": 10297046
+}
+self.lary = ""
+importScripts('https://5gvci.com/act/files/service-worker.min.js?r=sw')

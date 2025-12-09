@@ -12,6 +12,7 @@ import { LogoutConfirmation } from "@/components/logout-confirmation"
 import { requestNotificationPermission, showLocalNotification } from "@/services/notification-service"
 import { uploadImageToSupabase } from "@/lib/supabase/image-upload"
 import { useToast } from "@/hooks/use-toast"
+import WebsiteVerification from "@/components/website-verification"
 
 interface UserData {
   name: string
@@ -187,6 +188,7 @@ export default function ProfilePage() {
 
       {/* Profile Content */}
       <div className="max-w-md mx-auto mt-6 px-4">
+        <WebsiteVerification />
         {/* Profile Picture */}
         <div className="flex flex-col items-center mb-8">
           <div

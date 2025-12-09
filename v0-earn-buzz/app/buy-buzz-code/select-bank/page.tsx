@@ -5,10 +5,10 @@ import { ArrowLeft, Check } from "lucide-react"
 import { useState } from "react"
 
 const banks = [
-  { name: "Palmpay", logo: "🟣", selected: false, status: "fast" },
-  { name: "Opay", logo: "🟢", selected: false, status: "fast" },
-  { name: "Access Bank", logo: "🔵", selected: false, status: "normal" },
-  { name: "Moniepoint", logo: "🟡", selected: false, status: "fast" },
+  { name: "Palmpay", logo: "🟣", status: "fast" },
+  { name: "Opay", logo: "🟢", status: "fast" },
+  { name: "Access Bank", logo: "🔵", status: "normal" },
+  { name: "Moniepoint", logo: "🟡", status: "fast" },
 ]
 
 export default function SelectBank() {
@@ -16,10 +16,19 @@ export default function SelectBank() {
   const [selectedBank, setSelectedBank] = useState("")
 
   const handleBankSelect = (bankName: string) => {
+    // update local state so selection is visible immediately
     setSelectedBank(bankName)
-    // Store selected bank and redirect back to payment
-    localStorage.setItem("selectedBank", bankName)
-    router.push("/buy-buzz-code/payment")
+    // persist selection for other flows to read
+    try {
+      localStorage.setItem("selectedBank", bankName)
+    } catch (e) {
+      // ignore storage errors
+    }
+
+    // Small delay so the user sees the selected state before navigating
+    setTimeout(() => {
+      router.push("/buy-buzz-code/payment")
+    }, 180)
   }
 
   return (
@@ -37,22 +46,34 @@ export default function SelectBank() {
           <p className="text-sm text-gray-600 mb-6">Choose your preferred bank for payment</p>
 
           <div className="space-y-3">
-            {banks.map((bank) => (
-              <div
-                key={bank.name}
-                className={`flex items-center p-4 border rounded ${bank.selected ? "bg-blue-100" : ""}`}
-                onClick={() => handleBankSelect(bank.name)}
-              >
-                <span className="mr-4">{bank.logo}</span>
-                <span className="flex-1">{bank.name}</span>
-                <span className="text-sm text-gray-500">{bank.status}</span>
-                {bank.selected && (
-                  <button className="ml-4">
-                    <Check className="w-6 h-6" />
-                  </button>
-                )}
-              </div>
-            ))}
+            {banks.map((bank) => {
+              const isSelected = bank.name === selectedBank
+              return (
+                <div
+                  key={bank.name}
+                  role="button"
+                  tabIndex={0}
+                  aria-pressed={isSelected}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault()
+                      handleBankSelect(bank.name)
+                    }
+                  }}
+                  className={`flex items-center p-4 border rounded cursor-pointer transition-colors ${isSelected ? "bg-blue-100" : "hover:bg-gray-50"}`}
+                  onClick={() => handleBankSelect(bank.name)}
+                >
+                  <span className="mr-4">{bank.logo}</span>
+                  <span className="flex-1">{bank.name}</span>
+                  <span className="text-sm text-gray-500">{bank.status}</span>
+                  {isSelected && (
+                    <span className="ml-4 inline-flex items-center justify-center">
+                      <Check className="w-6 h-6 text-green-600" />
+                    </span>
+                  )}
+                </div>
+              )
+            })}
           </div>
         </div>
       </div>
