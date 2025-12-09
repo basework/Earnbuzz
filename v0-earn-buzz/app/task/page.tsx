@@ -25,7 +25,7 @@ const AVAILABLE_TASKS: Task[] = [
     category: "Advertisement",
     reward: 5000,
     link: "https://www.effectivegatecpm.com/h4imq50bhm?key=65343fceb6fb8fcf829db72d0dfeab90",
-    icon: "🔗",
+    icon: "👀",
   },
   {
     id: "ad-link-2",
