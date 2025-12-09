@@ -35,16 +35,17 @@ const AVAILABLE_TASKS: Task[] = [
     reward: 5000,
     link: "https://www.effectivegatecpm.com/igz1ifsu?key=b50a112d9fc3a6c47e967ab21a0e3342",
     icon: "🔗",
-  },*/
-  {
-    id: "ad-link-3",
-    platform: "Sponsor",
-    description: "Visit our sponsor and earn",
-    category: "Advertisement",
-    reward: 5000,
-    link: "https://www.effectivegatecpm.com/jdxt7gxiu?key=099939751dcb9e93525a630bf2c593f5",
-    icon: "📊",
   },
+  // {
+  //   id: "ad-link-3",
+  //   platform: "Sponsor",
+  //   description: "Visit our sponsor and earn",
+  //   category: "Advertisement",
+  //   reward: 5000,
+  //   link: "https://www.effectivegatecpm.com/jdxt7gxiu?key=099939751dcb9e93525a630bf2c593f5",
+  //   icon: "📊",
+  // },
+  */
   {
     id: "telegram-channel",
     platform: "Telegram",
