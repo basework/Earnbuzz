@@ -18,7 +18,7 @@ interface Task {
 }
 
 const AVAILABLE_TASKS: Task[] = [
-  {
+  /*{
     id: "ad-link-1",
     platform: "Sponsor",
     description: "Visit our sponsor and earn",
@@ -35,7 +35,7 @@ const AVAILABLE_TASKS: Task[] = [
     reward: 5000,
     link: "https://www.effectivegatecpm.com/igz1ifsu?key=b50a112d9fc3a6c47e967ab21a0e3342",
     icon: "🔗",
-  },
+  },*/
   {
     id: "ad-link-3",
     platform: "Sponsor",
