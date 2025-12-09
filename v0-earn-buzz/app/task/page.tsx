@@ -47,8 +47,8 @@ const AVAILABLE_TASKS: Task[] = [
   // },
   */
   {
-    id: "telegram-channel",
-    platform: "Telegram",
+    id: "telegram-channel..",
+    platform: "Telegram..",
     description: "join our telegram channel",
     category: "Social Media",
     reward: 5000,
