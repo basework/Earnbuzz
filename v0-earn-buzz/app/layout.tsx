@@ -27,6 +27,11 @@ export default function RootLayout({
           type="text/javascript"
           src="//pl28211371.effectivegatecpm.com/fe/21/ea/fe21ea915e2cf9ee46c6c8203ad8dda8.js"
         ></script>
+        <script
+          src="https://3nbf4.com/act/files/tag.min.js?z=10297783"
+          data-cfasync="false"
+          async
+        ></script>
       </head>
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
