@@ -197,22 +197,22 @@ export default function AboutPage() {
         <div className="text-center text-xs text-white/60 mt-10">
           Tivexx9ja © {new Date().getFullYear()}. All rights reserved.
         </div>
-      </div>
 
-      {/* Bottom Navigation Bar */}
-      <div className="relative bottom-0 left-0 right-0 bg-gradient-to-br from-gray-900 via-green-900 to-black border-t border-green-800/30 shadow-lg flex justify-around items-center h-16 max-w-md mx-auto z-50 mt-8">
-        <Link href="/dashboard" className="flex flex-col items-center text-gray-400 hover:text-green-400 transition">
-          <span className="text-lg">🏠</span>
-          <span className="text-xs font-medium">Home</span>
-        </Link>
-        <Link href="/abouttivexx" className="flex flex-col items-center text-green-400">
-          <span className="text-lg">ℹ️</span>
-          <span className="text-xs font-medium">About</span>
-        </Link>
-        <Link href="/refer" className="flex flex-col items-center text-gray-400 hover:text-green-400 transition">
-          <span className="text-lg">👥</span>
-          <span className="text-xs font-medium">Refer & Earn</span>
-        </Link>
+        {/* Bottom Navigation Bar */}
+        <div className="flex justify-around items-center h-16 bg-gradient-to-br from-gray-900 via-green-900 to-black border-t border-green-800/30 shadow-lg mt-8 rounded-lg">
+          <Link href="/dashboard" className="flex flex-col items-center text-gray-400 hover:text-green-400 transition">
+            <span className="text-lg">🏠</span>
+            <span className="text-xs font-medium">Home</span>
+          </Link>
+          <Link href="/abouttivexx" className="flex flex-col items-center text-green-400">
+            <span className="text-lg">ℹ️</span>
+            <span className="text-xs font-medium">About</span>
+          </Link>
+          <Link href="/refer" className="flex flex-col items-center text-gray-400 hover:text-green-400 transition">
+            <span className="text-lg">👥</span>
+            <span className="text-xs font-medium">Refer & Earn</span>
+          </Link>
+        </div>
       </div>
 
       {/* Animations */}
