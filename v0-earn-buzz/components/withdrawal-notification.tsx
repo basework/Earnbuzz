@@ -115,8 +115,8 @@ export function WithdrawalNotification({ onClose }: WithdrawalNotificationProps)
 
   return (
     <div
-      className={`fixed top-4 left-4 right-4 z-50 transition-all duration-300 transform ${
-        isVisible ? "translate-y-0 opacity-100" : "-translate-y-full opacity-0"
+      className={`fixed bottom-20 left-4 right-4 z-50 transition-all duration-300 transform ${
+        isVisible ? "translate-y-0 opacity-100" : "translate-y-full opacity-0"
       }`}
     >
       <div className="bg-gradient-to-br from-gray-900 via-green-900 to-black rounded-lg shadow-lg border border-green-800/30 p-4 mx-auto max-w-sm relative overflow-hidden">
