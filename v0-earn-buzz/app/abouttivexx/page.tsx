@@ -78,7 +78,7 @@ export default function AboutPage() {
         </button>
       </div>
 
-      <div className="max-w-5xl mx-auto px-4 py-12">
+      <div className="max-w-5xl mx-auto px-4 py-12 pb-32">
 
         {/* Header */}
         <div className="text-center mb-8">
@@ -200,7 +200,7 @@ export default function AboutPage() {
       </div>
 
       {/* Bottom Navigation Bar */}
-      <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-br from-gray-900 via-green-900 to-black border-t border-green-800/30 shadow-lg flex justify-around items-center h-16 max-w-md mx-auto z-50">
+      <div className="relative bottom-0 left-0 right-0 bg-gradient-to-br from-gray-900 via-green-900 to-black border-t border-green-800/30 shadow-lg flex justify-around items-center h-16 max-w-md mx-auto z-50 mt-8">
         <Link href="/dashboard" className="flex flex-col items-center text-gray-400 hover:text-green-400 transition">
           <span className="text-lg">🏠</span>
           <span className="text-xs font-medium">Home</span>
