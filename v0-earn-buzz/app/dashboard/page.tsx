@@ -382,13 +382,29 @@ export default function DashboardPage() {
       <ScrollingText />
 
       {showClaimSuccess && (
-        <div className="fixed bottom-24 left-0 right-0 z-50 flex justify-center pointer-events-none px-4">
+        <div className="fixed bottom-24 left-0 right-0 z-50 flex justify-center pointer-events-none px-4 animate-slide-in-up">
           <div className="bg-green-600 text-white px-8 py-4 rounded-2xl shadow-2xl animate-bounce w-full max-w-xs">
             <p className="text-xl font-bold text-center">🎉 Congrats!</p>
             <p className="text-lg text-center">₦1,000 has been claimed and added to your balance</p>
           </div>
         </div>
       )}
+
+      <style>{`
+        @keyframes slideInUp {
+          from {
+            transform: translateY(100px);
+            opacity: 0;
+          }
+          to {
+            transform: translateY(0);
+            opacity: 1;
+          }
+        }
+        .animate-slide-in-up {
+          animation: slideInUp 0.5s ease-out;
+        }
+      `}</style>
 
       <Dialog open={showPauseDialog} onOpenChange={setShowPauseDialog}>
         <DialogContent className="max-w-sm">
