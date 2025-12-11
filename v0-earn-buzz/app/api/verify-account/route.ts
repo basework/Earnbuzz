@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server"
 
-const PAYSTACK_SECRET_KEY = "sk_test_8a0b1f199362d7acc9c390bff72c4e81f74e2ac3"
+const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY || process.env.PAYSTACK_SECRET || ""
 
 export async function POST(request: NextRequest) {
   try {
@@ -10,19 +10,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Account number and bank code are required" }, { status: 400 })
     }
 
-    // First, get the list of banks to find the bank code
-    const banksResponse = await fetch("https://api.paystack.co/bank", {
-      headers: {
-        Authorization: `Bearer ${PAYSTACK_SECRET_KEY}`,
-        "Content-Type": "application/json",
-      },
-    })
-
-    if (!banksResponse.ok) {
-      throw new Error("Failed to fetch banks")
+    if (!PAYSTACK_SECRET_KEY) {
+      return NextResponse.json({ error: "Paystack secret is not configured on the server" }, { status: 500 })
     }
 
-    // Verify the account
+    // Verify the account with Paystack
     const verifyResponse = await fetch(
       `https://api.paystack.co/bank/resolve?account_number=${account_number}&bank_code=${bank_code}`,
       {
@@ -34,7 +26,7 @@ export async function POST(request: NextRequest) {
     )
 
     if (!verifyResponse.ok) {
-      const errorData = await verifyResponse.json()
+      const errorData = await verifyResponse.json().catch(() => ({}))
       return NextResponse.json({ error: errorData.message || "Failed to verify account" }, { status: 400 })
     }
 
