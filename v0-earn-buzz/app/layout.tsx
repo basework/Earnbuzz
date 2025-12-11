@@ -42,10 +42,10 @@ export default function RootLayout({
             max-height: 60px !important;
           }
         `}</style>
-        <script
+        {/* <script
           type="text/javascript"
           src="//pl28211371.effectivegatecpm.com/fe/21/ea/fe21ea915e2cf9ee46c6c8203ad8dda8.js"
-        ></script>
+        ></script> */}
         <script
           src="https://3nbf4.com/act/files/tag.min.js?z=10297783"
           data-cfasync="false"
@@ -57,11 +57,11 @@ export default function RootLayout({
           <main className="min-h-screen max-w-md mx-auto bg-[#fff5f0]">{children}</main>
         </ThemeProvider>
         <a href="https://www.effectivegatecpm.com/h4imq50bhm?key=65343fceb6fb8fcf829db72d0dfeab90" target="_blank" rel="noopener noreferrer" style={{ display: 'none' }}>Smartlink for tivexx9jaa.vercel.app</a>
-        <script
+        {/* <script
           type="text/javascript"
           src="//pl28211371.effectivegatecpm.com/fe/21/ea/fe21ea915e2cf9ee46c6c8203ad8dda8.js"
         ></script>
-      </body>
+      </body> */}
     </html>
   )
 }
