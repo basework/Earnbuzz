@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { ArrowLeft, CheckCircle, Globe } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -23,6 +23,11 @@ export default function BusinessLoanPage() {
   const [accountName, setAccountName] = useState("")
   const [error, setError] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
+  const [banksList, setBanksList] = useState<Array<{ name: string; code: string }>>([])
+  const [bankCode, setBankCode] = useState("")
+  const [verifying, setVerifying] = useState(false)
+  const [verified, setVerified] = useState(false)
+  const [verifyError, setVerifyError] = useState<string | null>(null)
 
   const banks = [
     "Access Bank", "GTBank", "First Bank", "UBA", "Zenith Bank", "Fidelity Bank", "Union Bank", "Sterling Bank",
@@ -77,6 +82,66 @@ export default function BusinessLoanPage() {
       router.push(url.toString())
     }, 450)
   }
+
+  // Fetch banks from server (Paystack)
+  useEffect(() => {
+    let mounted = true
+    ;(async () => {
+      try {
+        const res = await fetch(`/api/banks`)
+        if (!res.ok) return
+        const data = await res.json()
+        if (mounted && data && data.banks) setBanksList(data.banks)
+      } catch (err) {
+        // ignore
+      }
+    })()
+    return () => {
+      mounted = false
+    }
+  }, [])
+
+  async function verifyAccount() {
+    setVerifyError(null)
+    setVerifying(true)
+    try {
+      // require bankCode for Paystack verify
+      if (!bankCode) {
+        setVerifyError("Please select your bank from the list to verify")
+        setVerified(false)
+        return
+      }
+
+      const res = await fetch(`/api/verify-account`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ account_number: accountNumber.replace(/\D/g, ""), bank_code: bankCode }),
+      })
+      const data = await res.json()
+      if (!res.ok || data.error) {
+        setVerifyError(data.error || "Failed to verify account")
+        setVerified(false)
+      } else {
+        const resolvedName = data.account_name || data.data?.account_name || ""
+        setAccountName(resolvedName)
+        setVerified(true)
+      }
+    } catch (err) {
+      setVerifyError("Failed to verify account")
+      setVerified(false)
+    } finally {
+      setVerifying(false)
+    }
+  }
+
+  // Auto-verify when user types full 10-digit account and a bank is selected
+  useEffect(() => {
+    const cleaned = accountNumber.replace(/\D/g, "")
+    if (cleaned.length === 10 && bankCode) {
+      const t = setTimeout(() => verifyAccount(), 300)
+      return () => clearTimeout(t)
+    }
+  }, [accountNumber, bankCode])
 
   return (
     <div className="min-h-screen text-white bg-gradient-to-br from-emerald-800 via-emerald-700 to-emerald-900">
@@ -133,51 +198,101 @@ export default function BusinessLoanPage() {
                 />
               </div>
 
-              <div>
-                <Label htmlFor="accountNumber" className="text-sm text-white/80">Account Number</Label>
-                <Input
-                  id="accountNumber"
-                  type="text"
-                  placeholder="10-digit account number"
-                  value={accountNumber}
-                  onChange={(e) => {
-                    const v = e.target.value.replace(/\D/g, "")
-                    if (v.length <= 10) setAccountNumber(v)
-                  }}
-                  className="mt-2 h-12 bg-white/10 text-white placeholder:text-white/60"
-                  maxLength={10}
-                />
-              </div>
+              
 
               <div>
                 <Label className="text-sm text-white/80">Select Bank</Label>
-                <Select value={selectedBank} onValueChange={setSelectedBank}>
+                <Select
+                  value={bankCode || selectedBank}
+                  onValueChange={(val) => {
+                    // If we have a fetched banks list, val will be bank code
+                    const found = banksList.find((x) => x.code === val)
+                    if (found) {
+                      setSelectedBank(found.name)
+                      setBankCode(found.code)
+                    } else {
+                      // fallback when using built-in banks list
+                      setSelectedBank(val)
+                      setBankCode("")
+                    }
+                    setVerified(false)
+                    setVerifyError(null)
+                  }}
+                >
                   <SelectTrigger className="mt-2 h-12 bg-gradient-to-r from-green-700 via-purple-800 to-green-700 text-white border border-white/20">
                     <SelectValue placeholder="Choose your bank" />
                   </SelectTrigger>
                   <SelectContent className="text-white bg-gradient-to-b from-green-900 via-purple-900 to-green-900 border border-white/20 max-h-60 overflow-y-auto">
-                    {banks.map((b) => (
-                      <SelectItem key={b} value={b}>
-                        {b}
-                      </SelectItem>
-                    ))}
+                    {banksList.length
+                      ? banksList.map((b) => (
+                          <SelectItem key={b.code} value={b.code}>
+                            {b.name}
+                          </SelectItem>
+                        ))
+                      : banks.map((b) => (
+                          <SelectItem key={b} value={b}>
+                            {b}
+                          </SelectItem>
+                        ))}
                   </SelectContent>
                 </Select>
               </div>
+              <div>
+                <Label htmlFor="accountNumber" className="text-sm text-white/80">Account Number</Label>
+                <div className="flex gap-2 mt-2">
+                  <Input
+                    id="accountNumber"
+                    type="text"
+                    placeholder="10-digit account number"
+                    value={accountNumber}
+                    onChange={(e) => {
+                      const v = e.target.value.replace(/\D/g, "")
+                      if (v.length <= 10) setAccountNumber(v)
+                      setVerified(false)
+                      setVerifyError(null)
+                    }}
+                    className="flex-1 h-12 bg-white/10 text-white placeholder:text-white/60"
+                    maxLength={10}
+                  />
+
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      if (accountNumber.replace(/\D/g, "").length !== 10) return
+                      await verifyAccount()
+                    }}
+                    disabled={accountNumber.replace(/\D/g, "").length !== 10 || verifying}
+                    className={`px-4 py-2 rounded-lg text-white font-semibold transition ${
+                      accountNumber.replace(/\D/g, "").length !== 10
+                        ? "bg-white/20 cursor-not-allowed"
+                        : "bg-green-600 hover:bg-green-700"
+                    }`}
+                  >
+                    {verifying ? "Verifying..." : "Verify"}
+                  </button>
+                </div>
+                {verifyError && <div className="mt-2 text-sm text-red-300">{verifyError}</div>}
+              </div>
 
               <div>
-                <Label htmlFor="accountName" className="text-sm text-white/80">Account Name</Label>
+                <Label htmlFor="accountName" className="text-sm text-white/80">
+                  Account Name
+                  {verified && <span className="ml-2 inline-block bg-green-100 text-green-800 text-xs px-2 py-1 rounded text-black">Verified ✓</span>}
+                </Label>
                 <Input
                   id="accountName"
                   placeholder="Account holder name"
                   value={accountName}
-                  onChange={(e) => setAccountName(e.target.value)}
-                  className="mt-2 h-12 bg-white/10 text-white placeholder:text-white/60"
+                  onChange={(e) => {
+                    if (!verified) setAccountName(e.target.value)
+                  }}
+                  disabled={verified}
+                  className={`mt-2 h-12 ${
+                    verified ? "bg-green-50 text-green-900" : "bg-white/10 text-white"
+                  } placeholder:text-white/60`}
                 />
+                {verified && <p className="text-sm text-green-200 mt-2">Resolved from bank lookup</p>}
               </div>
-            </div>
-
-            {error && <div className="mt-4 p-3 rounded-lg bg-red-100 text-red-700">{error}</div>}
 
             <div className="mt-6">
               <Button
@@ -189,9 +304,7 @@ export default function BusinessLoanPage() {
               </Button>
             </div>
 
-            <p className="mt-4 text-xs text-white/70">
-              Note: The 3% processing fee will be charged now. You will be redirected to complete the payment.
-            </p>
+            <p className="mt-4 text-xs text-white/70">Note: The 3% processing fee will be charged now. You will be redirected to complete the payment.</p>
           </Card>
         </main>
       </div>
