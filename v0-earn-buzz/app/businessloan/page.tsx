@@ -146,7 +146,7 @@ export default function BusinessLoanPage() {
   return (
     <div className="min-h-screen text-white bg-gradient-to-br from-emerald-800 via-emerald-700 to-emerald-900">
       {/* Subtle glow background */}
-      <div className="absolute inset-0 -z-10 bg-gradient-to-tr from-[#065f46]/40 via-[#10b981]/20 to-[#064e3b]/50"></div>
+      <div className="absolute inset-0 -z-10 bg-gradient-to-tr from-[#065f46]/40 via-[#10b981]/20 to-[#064e3b]/50" />
 
       <div className="max-w-3xl mx-auto px-4 py-8">
         {/* Header */}
