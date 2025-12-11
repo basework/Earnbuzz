@@ -120,7 +120,8 @@ export default function SetupWithdrawalAccountPage() {
         setVerifyError(data.error || "Failed to verify account")
         setVerified(false)
       } else {
-        setAccountName(data.account_name || data.account_name || "")
+        const resolvedName = data.account_name || data.data?.account_name || ""
+        setAccountName(resolvedName)
         setVerified(true)
       }
     } catch (err) {
@@ -320,18 +321,25 @@ export default function SetupWithdrawalAccountPage() {
 
           {/* Account Name */}
           <div>
-            <label className="block text-sm font-medium text-green-800 mb-2">Account Name</label>
+            <label className="block text-sm font-medium text-green-800 mb-2">
+              Account Name
+              {verified && <span className="ml-2 inline-block bg-green-100 text-green-800 text-xs px-2 py-1 rounded">Verified ✓</span>}
+            </label>
             <input
               value={accountName}
-              onChange={(e) => setAccountName(e.target.value)}
+              onChange={(e) => {
+                if (!verified) setAccountName(e.target.value)
+              }}
               placeholder="Enter account name"
-              className="w-full rounded-md border border-green-300 px-4 py-3 focus:outline-none focus:ring-2 focus:ring-green-400 transition"
+              disabled={verified}
+              className={`w-full rounded-md border px-4 py-3 focus:outline-none focus:ring-2 transition ${
+                verified
+                  ? "border-green-400 bg-green-50 text-green-900 cursor-not-allowed focus:ring-green-300"
+                  : "border-green-300 bg-white focus:ring-green-400"
+              }`}
             />
             {verified && (
-              <div className="flex items-center gap-2 mt-2">
-                <span className="inline-block bg-green-100 text-green-800 text-xs px-2 py-1 rounded">Verified</span>
-                <span className="text-sm text-green-700">Resolved from bank lookup</span>
-              </div>
+              <p className="text-xs text-green-700 mt-1">Resolved from bank lookup</p>
             )}
           </div>
 
